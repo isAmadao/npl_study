@@ -2,9 +2,13 @@ import time
 
 import pandas as pd #用于数据处理和分析的库
 import jieba as jb #用于分词的库
+from fastapi import FastAPI
+from openai import OpenAI
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.neighbors import KNeighborsClassifier
+
+app = FastAPI()
 
 #读取本地文件
 dataset = pd.read_csv("dataset.csv", sep="\t", header=None)
@@ -33,20 +37,50 @@ nb_model = MultinomialNB()
 nb_model.fit(input_feature, dataset[1])
 
 #大预言模型 llm
+qw_client = OpenAI(
+    #自己生气的api_key
+    api_key="sk-7a14b640740744a1823fd321997e229a",
+    # 大模型厂商的地址，阿里云
+    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
 
+@app.get("/ai")
+def llm_user_query(text :str):
+    #调用大预言模型,询问内容并得到回复
+    res = qw_client.chat.completions.create(
+        model="qwen-flash",  # 模型的代号
+        messages=[{"role": "user", "content": text}]
+    )
+    return res.choices[0].message.content
 
+types = set(dataset[1].values)
 
-def test(text :str):
+@app.get("/text-cls/ml")
+def ml_cls(text :str) ->str:
     test_sentence = " ".join(jb.lcut(text))
     test_feature = vector.transform([test_sentence])
-    knn_res = knn_model.predict(test_feature)[0]
-    nb_res = nb_model.predict(test_feature)[0]
-    print(f"{text} -> {knn_res},{nb_res}")
+    #返回机器学习的预测，可选knn和nb
+    #knn_model.predict(test_feature)[0]
+    return nb_model.predict(test_feature)[0]
 
-test("我想看和平精英上战神必备技巧的游戏视频")
-test("播放钢琴曲命运交响曲")
-test("我怎么去大梅沙")
-test("美女，约吗？")
-test("我要怎么才能学好ai编程")
+@app.get("/text-cls/llm")
+def llm_cls(text :str) ->str:
+    llm_str = (f"请帮我把这段话进行文本分类 字符串:'{text}'，"
+               f"类别只能从我指定的列表中选择:{types},请直接回复类别即可")
+    return llm_user_query(llm_str)
+
+@app.get("/text-cls/all")
+def test(text :str) ->str:
+    result = f"{text} -> {ml_cls(text)},{llm_cls(text)}"
+    print(result)
+    return result
+
+if __name__ == '__main__':
+    print(f"主要类别有:{types}")
+    print("开始测试字符串分类任务 ...")
+    test("我想看和平精英上战神必备技巧的游戏视频")
+    test("播放钢琴曲命运交响曲")
+    test("我怎么去大梅沙")
+    test("你好，吃饭了吗？")
+    test("我要怎么才能学好ai编程")
 
 
