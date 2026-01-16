@@ -15,7 +15,7 @@ app = FastAPI()
 from openai import OpenAI
 
 client = OpenAI(
-    api_key="sk-1f8f970c557d41b9899269dc981366f9",  # 账号绑定的
+    api_key="sk-1f8f970c557xxxxxdc981366f9",  # 账号绑定的
     base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
 )
 
