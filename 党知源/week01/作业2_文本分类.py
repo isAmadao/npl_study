@@ -32,7 +32,7 @@ model.fit(input_features, target)  # 训练模型
 
 # --- LLM 客户端配置 ---
 client = OpenAI(
-    api_key="sk-dfc733b0b068437e902520d94005c07c",
+    api_key="sk-dfc733xxxxxx0d94005c07c",
     base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
 )
 
