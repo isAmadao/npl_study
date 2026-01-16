@@ -28,7 +28,7 @@ def test_classify_using_ml(text: str) -> str:
 client = OpenAI(
     # 若没有配置环境变量，请用百炼API Key将下行替换为：api_key="sk-xxx",
     # https://bailian.console.aliyun.com/?tab=model#/api-key
-    api_key="sk-9f96f86d7029428bbb74d78d33859df2", # 账号绑定的
+    api_key="sk-9f96f86d7xxxxx78d33859df2", # 账号绑定的
 
     # 大模型厂商的地址
     base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
