@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>文本分类</title>
+</head>
+<body>
+    <input type="text" id="textInput" placeholder="输入文本">
+    <button onclick="predict('predict1', 'mlResult')">机器学习预测</button>
+    <button onclick="predict('predict2', 'llmResult')">大模型预测</button>
+    
+    <div id="mlResult"></div>
+    <div id="llmResult"></div>
+
+    <script>
+        async function predict(endpoint, resultId) {
+            const text = document.getElementById('textInput').value;
+            const resultDiv = document.getElementById(resultId);
+            
+            if (!text) return alert('请输入文本');
+            
+            resultDiv.innerText = '加载中...';
+            try {
+                const res = await fetch(`http://127.0.0.1:8000/${endpoint}?sentence=${encodeURIComponent(text)}`);
+                if (!res.ok) throw new Error(res.status);
+                resultDiv.innerText = await res.text();
+            } catch (e) {
+                resultDiv.innerText = '错误: ' + e.message;
+            }
+        }
+    </script>
+</body>
+</html>
