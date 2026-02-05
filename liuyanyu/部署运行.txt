@@ -1,0 +1,30 @@
+INFO:     Started server process [13432]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     127.0.0.1:59226 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59226 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51229 - "GET /docs HTTP/1.1" 200 OK
+INFO:     127.0.0.1:51229 - "GET /openapi.json HTTP/1.1" 200 OK
+2026-02-05 17:31:23,569 - logger - INFO - string string
+INFO:     127.0.0.1:51025 - "POST /v1/text-cls/regex HTTP/1.1" 200 OK
+INFO:     127.0.0.1:55605 - "POST /v1/text-cls/bert HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58569 - "POST /v1/text-cls/bert HTTP/1.1" 200 OK
+2026-02-05 17:32:57,265 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/v1/chat/completions "HTTP/1.1 503 Service Unavailable"
+2026-02-05 17:32:57,267 - openai._base_client - INFO - Retrying request to /chat/completions in 0.473428 seconds
+2026-02-05 17:32:58,097 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/v1/chat/completions "HTTP/1.1 503 Service Unavailable"
+2026-02-05 17:32:58,097 - openai._base_client - INFO - Retrying request to /chat/completions in 0.998581 seconds
+2026-02-05 17:32:59,446 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/v1/chat/completions "HTTP/1.1 503 Service Unavailable"
+INFO:     127.0.0.1:54084 - "POST /v1/text-cls/gpt HTTP/1.1" 200 OK
+2026-02-05 17:33:24,515 - logger - INFO - 1 帮我打开相声
+INFO:     127.0.0.1:59109 - "POST /v1/text-cls/regex HTTP/1.1" 200 OK
+2026-02-05 17:33:42,225 - logger - INFO - Get requst: {"request_id":"1","request_text":"帮我打开相声"}
+Building prefix dict from the default dictionary ...
+2026-02-05 17:33:42,226 - jieba - DEBUG - Building prefix dict from the default dictionary ...
+Loading model from cache C:\Users\admin\AppData\Local\Temp\jieba.cache
+2026-02-05 17:33:42,226 - jieba - DEBUG - Loading model from cache C:\Users\admin\AppData\Local\Temp\jieba.cache
+Loading model cost 0.438 seconds.
+2026-02-05 17:33:42,664 - jieba - DEBUG - Loading model cost 0.438 seconds.
+Prefix dict has been built successfully.
+2026-02-05 17:33:42,664 - jieba - DEBUG - Prefix dict has been built successfully.
+INFO:     127.0.0.1:62830 - "POST /v1/text-cls/tfidf HTTP/1.1" 200 OK
