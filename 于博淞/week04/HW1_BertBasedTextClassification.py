@@ -1,0 +1,216 @@
+import numpy as np
+import pandas as pd
+
+import torch
+from torch.utils.data import Dataset, DataLoader
+
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder
+
+from transformers import BertTokenizer
+from transformers import BertForSequenceClassification
+
+# -------------------------- 1. 数据准备 --------------------------
+# 加载数据集，指定分隔符为制表符，并无表头
+
+splits = {'train': 'train.json', 'validation': 'validation.json', 'test': 'test.json'}
+dataset = pd.read_json("./train.json", lines=True)
+print(dataset)
+lbl = LabelEncoder()
+lbl.fit(dataset["label"])  # 拟合所有类别
+
+# 提取特征（text）和标签（label）
+texts = dataset["text"].values          # 特征 X：文本句子
+labels = dataset["label"].values        # 标签 y：原始字符串标签
+
+n_samples = min(1000, len(dataset))
+texts = texts[:n_samples]
+labels = labels[:n_samples]
+
+# 检查是否有类别样本数 < 2（避免 stratify 报错）
+from collections import Counter
+label_counts = Counter(labels)
+min_count = min(label_counts.values())
+if min_count < 2:
+    print(f"警告：最少类别只有 {min_count} 个样本！过滤掉 <2 的类别...")
+    # 可选：过滤掉样本数 <2 的类别
+    valid_labels = [lbl for lbl, cnt in label_counts.items() if cnt >= 2]
+    mask = [label in valid_labels for label in labels]
+    texts = texts[mask]
+    labels = labels[mask]
+
+encoded_labels = lbl.transform(labels)
+
+x_train, x_test, train_label, test_label = train_test_split(
+    texts,                    # 特征：文本
+    encoded_labels,           # 标签：数字编码
+    test_size=0.2,
+    stratify=labels,          # 分层依据：原始字符串标签（保证比例一致）
+    random_state=42
+)
+
+x_train = x_train.tolist()
+x_test = x_test.tolist()
+train_label = train_label.tolist()
+test_label = test_label.tolist()
+
+print("训练集大小:", len(x_train))
+print("测试集大小:", len(x_test))
+print("类别数:", len(lbl.classes_))
+
+# 加载BERT预训练的分词器（Tokenizer）
+# 分词器负责将文本转换为模型可识别的输入ID、注意力掩码等
+tokenizer = BertTokenizer.from_pretrained('./models/google-bert/bert-base-chinese')
+
+# 对训练集和测试集的文本进行编码
+# truncation=True：如果句子长度超过max_length，则截断
+# padding=True：将所有句子填充到max_length
+# max_length=64：最大序列长度
+train_encoding = tokenizer(x_train, truncation=True, padding=True, max_length=64)
+test_encoding = tokenizer(x_test, truncation=True, padding=True, max_length=64)
+
+
+# -------------------------- 2. 数据集和数据加载器 --------------------------
+# 自定义数据集类，继承自PyTorch的Dataset
+# 用于处理编码后的数据和标签，方便后续批量读取
+class NewsDataset(Dataset):
+    def __init__(self, encodings, labels):
+        self.encodings = encodings
+        self.labels = labels
+
+    # 获取单个样本的方法
+    def __getitem__(self, idx):
+        # 从编码字典中提取input_ids, attention_mask等，并转换为PyTorch张量
+        item = {key: torch.tensor(val[idx]) for key, val in self.encodings.items()}
+        # 添加标签，并转换为张量
+        item['labels'] = torch.tensor(int(self.labels[idx]))
+        return item
+
+    # 返回数据集总样本数的方法
+    def __len__(self):
+        return len(self.labels)
+
+
+# 实例化自定义数据集
+train_dataset = NewsDataset(train_encoding, train_label) # 单个样本读取的数据集
+test_dataset = NewsDataset(test_encoding, test_label)
+
+# 使用DataLoader创建批量数据加载器
+# batch_size=16：每个批次包含16个样本
+# shuffle=True：在每个epoch开始时打乱数据，以提高模型泛化能力
+train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True) # 批量读取样本
+test_dataloader = DataLoader(test_dataset, batch_size=16, shuffle=True)
+
+for batch_data in train_loader:
+    break
+
+# -------------------------- 3. 模型和优化器 --------------------------
+# 加载BERT用于序列分类的预训练模型
+# num_labels=12：指定分类任务的类别数量
+# https://huggingface.co/docs/transformers/v4.56.0/en/model_doc/bert#transformers.BertForSequenceClassification
+model = BertForSequenceClassification.from_pretrained('./models/google-bert/bert-base-chinese', num_labels=150)
+
+# 设置设备，优先使用CUDA（GPU），否则使用CPU
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# 将模型移动到指定的设备上
+model.to(device)
+
+# 定义优化器，使用AdamW，lr是学习率
+optim = torch.optim.AdamW(model.parameters(), lr=2e-5)
+
+
+# 定义精度计算函数
+def flat_accuracy(preds, labels):
+    # 获取预测结果的最高概率索引
+    pred_flat = np.argmax(preds, axis=1).flatten()
+    # 展平真实标签
+    labels_flat = labels.flatten()
+    # 计算准确率
+    return np.sum(pred_flat == labels_flat) / len(labels_flat)
+
+
+# -------------------------- 4. 训练和验证函数 --------------------------
+# 定义训练函数
+def train():
+    # 设置模型为训练模式
+    model.train()
+    total_train_loss = 0
+    iter_num = 0
+    total_iter = len(train_loader)
+
+    # 遍历训练数据加载器
+    for batch in train_loader:
+        # 清除上一轮的梯度
+        optim.zero_grad()
+
+        # 将批次数据移动到指定设备
+        input_ids = batch['input_ids'].to(device)
+        attention_mask = batch['attention_mask'].to(device)
+        labels = batch['labels'].to(device)
+
+        # 执行前向传播，得到损失和logits
+        outputs = model(input_ids, attention_mask=attention_mask, labels=labels) # 自动计算损失
+        loss = outputs[0]
+        total_train_loss += loss.item()
+
+        # 反向传播计算梯度
+        loss.backward()
+        # 梯度裁剪，防止梯度爆炸
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+
+        # 更新模型参数
+        optim.step()
+
+        iter_num += 1
+        # 每100步打印一次训练进度
+        if (iter_num % 100 == 0):
+            print("epoth: %d, iter_num: %d, loss: %.4f, %.2f%%" % (
+                epoch, iter_num, loss.item(), iter_num / total_iter * 100))
+
+    # 打印平均训练损失
+    print("Epoch: %d, Average training loss: %.4f" % (epoch, total_train_loss / len(train_loader)))
+
+
+# 定义验证函数
+def validation():
+    # 设置模型为评估模式
+    model.eval()
+    total_eval_accuracy = 0
+    total_eval_loss = 0
+
+    # 遍历测试数据加载器
+    for batch in test_dataloader:
+        # 在验证阶段，不计算梯度
+        with torch.no_grad():
+            # 将批次数据移动到指定设备
+            input_ids = batch['input_ids'].to(device)
+            attention_mask = batch['attention_mask'].to(device)
+            labels = batch['labels'].to(device)
+
+            # 执行前向传播
+            outputs = model(input_ids, attention_mask=attention_mask, labels=labels)
+
+        loss = outputs[0]
+        logits = outputs[1]
+
+        total_eval_loss += loss.item()
+        # 将logits和标签从GPU移动到CPU，并转换为numpy数组
+        logits = logits.detach().cpu().numpy()
+        label_ids = labels.to('cpu').numpy()
+        total_eval_accuracy += flat_accuracy(logits, label_ids)
+
+    # 计算平均准确率
+    avg_val_accuracy = total_eval_accuracy / len(test_dataloader)
+    print("Accuracy: %.4f" % (avg_val_accuracy))
+    print("Average testing loss: %.4f" % (total_eval_loss / len(test_dataloader)))
+    print("-------------------------------")
+
+
+# -------------------------- 5. 主训练循环 --------------------------
+# 循环训练4个epoch
+for epoch in range(4):
+    print("------------Epoch: %d ----------------" % epoch)
+    # 训练模型
+    train()
+    # 验证模型
+    validation()
