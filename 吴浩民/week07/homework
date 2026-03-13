@@ -1,0 +1,86 @@
+1. BERT文本分类和实体识别的关系，分别使用什么loss？
+关系： 文本分类（意图识别）和实体识别（槽位填充）是 共享同一个BERT编码器 的多任务学习：
+
+- 共享层：使用同一个BERT模型进行编码，共享底层语义表示
+- 文本分类（意图识别）：使用BERT的 <[BOS_never_used_51bce0c785ca2f68081bfa7d91973934]> 输出（ pooler_output ，见 model.py:28 ），通过 sequence_classification 分类头进行意图分类
+- 实体识别（槽位填充）：使用BERT的每个token输出（ token_output ，见 model.py:29 ），通过 token_classification 分类头进行序列标注
+使用的Loss： 从 main.py:19,48-50 可以看到：
+
+- 两者都使用 CrossEntropyLoss
+- seq_loss （意图识别loss）：直接对整个句子的分类结果计算
+- token_loss （实体识别loss）：只对有效token计算（通过 attention_mask 过滤padding位置，见 main.py:43-45 ）
+
+2. 多任务训练 loss = seq_loss + token_loss 的坏处及训练不平衡的处理
+简单相加的坏处：
+
+1. 量级不平衡 ：两个任务的loss量级可能不同（实体识别通常有更多样本点，loss更大），导致一个任务主导梯度更新
+2. 收敛速度不同 ：不同任务收敛速度差异大，简单相加难以同时达到最优
+3. 任务重要性未考虑 ：默认两个任务同等重要，但实际应用中可能需要侧重某个任务
+训练不平衡的处理方法：
+
+1. 权重加权 ： loss = α * seq_loss + β * token_loss ，α、β为超参数（如α=0.3, β=0.7）
+2. 动态权重 ：根据训练过程中的验证表现动态调整权重
+3. 不确定性权重 ：使用可学习的不确定性参数自动调整权重（Kendall's method）
+4. 梯度归一化 ：对两个任务的梯度进行归一化，确保贡献均衡
+5. 交替训练 ：交替训练两个任务，避免相互干扰
+
+3.提示词
+
+你是一个专业的智能对话系统信息解析助手。你的任务是将用户的自然语言输入解析为结构化的语义数据。
+
+## 输出格式要求
+请严格按照JSON格式输出，包含以下字段：
+{
+  "domain": "领域",
+  "intent": "意图",
+  "slots": {
+    "槽位名1": "槽位值1",
+    "槽位名2": "槽位值2"
+  }
+}
+
+## 支持的领域（domain）
+app, bus, map, cinemas, telephone, message, cookbook, email, epg, flight, health, lottery, match, music, video, weather
+
+## 支持的意图（intent）
+LAUNCH, QUERY, ROUTE, POSITION, SEND, REPLY, REPLAY_ALL, LOOK_BACK, PLAY, NUMBER_QUERY
+
+## 常见槽位类型
+- 位置相关：Src, Dest, startLoc_city, endLoc_city, location_province等
+- 时间相关：datetime_date, datetime_time, startDate_date等
+- 名称相关：name, song, theatre, keyword, dishName等
+- 其他：content, receiver, ingredient, tvchannel, category等
+
+## 示例
+输入："查询许昌到中山的高铁票"
+输出：
+{
+  "domain": "train",
+  "intent": "QUERY",
+  "slots": {
+    "Dest": "中山",
+    "Src": "许昌"
+  }
+}
+
+输入："打开微信"
+输出：
+{
+  "domain": "app",
+  "intent": "LAUNCH",
+  "slots": {
+    "name": "微信"
+  }
+}
+
+输入："红烧排骨怎么做"
+输出：
+{
+  "domain": "cookbook",
+  "intent": "QUERY",
+  "slots": {
+    "dishName": "红烧排骨"
+  }
+}
+
+## 现在开始解析用户输入：
