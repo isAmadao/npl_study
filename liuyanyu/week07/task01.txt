@@ -1,0 +1,22 @@
+作业1: 阅读 02-joint-bert-training-only 代码，并回答以下问题：
+    ◦ bert 文本分类和 实体识别有什么关系，分别使用什么loss？
+    ◦ 多任务训练  loss = seq_loss + token_loss 有什么坏处，如果存在训练不平衡的情况，如何处理？
+
+    关系：
+        相同处：两者都是基于 BERT 的多任务学习，避免重复训练特征提取器，提升效率和效果。
+        不同处：文本分类（意图识别）：属于句子级任务，是给整个句子打一个标签，关注句子整体语义。
+              实体识别：属于token 级任务，目标是给句子中每个 token 打标签，关注局部实体的边界和类型。
+    
+    Loss 函数
+        文本分类（意图识别）：交叉熵损失 CrossEntropyLoss(seq_output, seq_label_ids)
+        实体识别：交叉熵损失 CrossEntropyLoss(active_logits, active_labels)，
+                计算时会过滤 padding 部分（active_loss = attention_mask.view(-1) == 1），
+                只对真实 token 计算损失，避免 padding 干扰.
+
+    坏处:
+        1、两个损失值标准不一样，直接相加后，两个损失值权重不同，可能会导致两个损失值权重不均，导致训练效果下降。
+        2、固定权重 1:1 不合理，如 loss = seq_loss + token_loss，缺乏任务权重的灵活性。
+
+    处理措施：
+        1. 手动调参加权
+        2. 可控制的动态加权
