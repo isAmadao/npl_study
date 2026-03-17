@@ -1,0 +1,62 @@
+from pydantic import BaseModel, Field
+from typing import List
+from typing_extensions import Literal
+
+import openai
+
+client = openai.OpenAI(
+    api_key="sk-b220c23d00d84424a07f2cf000e48920",
+    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1"
+)
+
+
+class ExtractionAgent:
+    def __init__(self, model_name: str):
+        self.model_name = model_name
+
+    def call(self, user_prompt, response_model):
+        messages = [
+            {
+                "role": "user",
+                "content": user_prompt
+            }
+        ]
+        tools = [
+            {
+                "type":"function",
+                "function":{
+                    "name": response_model.model_json_schema()['title'],#工具名字
+                    "description": response_model.model_json_schema()['description'],#工具描述
+                    "parameters": {
+                        "type": "object",
+                        "properties": response_model.model_json_schema()['properties'],#参数说明
+                        "required": response_model.model_json_schema()['required'],#必须要传的参数
+                    }
+                }
+            }
+        ]
+
+        response = client.chat.completions.create(
+            model=self.model_name,
+            messages=messages,
+            tools=tools,
+            tool_choice="auto",
+        )
+        try:
+            arguments = response.choices[0].message.tool_calls[0].function.arguments
+
+            return response_model.model_validate_json(arguments)
+
+        except:
+            print('ERROR', response.choices[0].message)
+            return None
+
+
+class Text(BaseModel):
+    """自动识别需要翻译的文本（原始语种、目标语种、待翻译的文本）"""
+    sentence_transformers:str = Field(description="待翻译的文本")
+    sentence_transformers_source:str = Field(description="原始语种")
+    sentence_transformers_target:str = Field(description="目标语种")
+    sentence_transformers_output:str = Field(description="翻译结果")
+result = ExtractionAgent(model_name = "qwen-plus").call('帮我将good翻译为中文', Text)
+print(result)
