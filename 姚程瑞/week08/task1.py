@@ -8,7 +8,7 @@ import os
 
 # 从环境变量获取 API Key，如果没有设置则使用默认值
 # 请确保设置 DASHSCOPE_API_KEY 环境变量或在下方填入你的 API Key
-API_KEY = os.getenv("DASHSCOPE_API_KEY", "your-api-key-here")
+API_KEY = os.getenv("DASHSCOPE_API_KEY", "sk-78cc4e9ac8f44efdb207b7232e1ae6d8")
 
 client = openai.OpenAI(
     api_key=API_KEY,
