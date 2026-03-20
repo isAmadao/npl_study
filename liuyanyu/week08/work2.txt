@@ -1,0 +1,34 @@
+# 下载Elasticsearch 7.17.0
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.0-linux-x86_64.tar.gz
+
+# 解压
+tar -xzf elasticsearch-7.17.0-linux-x86_64.tar.gz
+cd elasticsearch-7.17.0/
+
+[2025-03-19T10:30:45,123][INFO ][o.e.n.Node               ] [node-1] starting ...
+[2025-03-19T10:30:48,456][INFO ][o.e.e.NodeEnvironment    ] [node-1] using [1] data paths, mounts [[/data/es-data (/dev/sda1)]], net usable_space [98.5gb], net total_space [196.7gb], types [ext4]
+[2025-03-19T10:30:52,789][INFO ][o.e.h.AbstractHttpServerTransport] [node-1] publish_address {192.168.1.10:9200}, bound_addresses {0.0.0.0:9200}
+[2025-03-19T10:30:52,790][INFO ][o.e.n.Node               ] [node-1] started
+
+# 创建虚拟环境
+python3.10 -m venv llm_env
+source llm_env/bin/activate
+
+# 安装 vLLM（支持 Qwen 系列）和 FastAPI
+pip install vllm==0.6.3 fastapi uvicorn
+
+模型下载至：/home/user/.cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct
+
+INFO:     Started server process [12345]
+INFO:     Waiting for application startup.
+服务启动，模型加载完成：/home/user/.cache/huggingface/hub/models--Qwen--Qwen2.5-0.5B-Instruct/snapshots/xxxxxx
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+
+curl -X POST http://localhost:8000/chat \
+  -H "Content-Type: application/json" \
+  -d '{"prompt": "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n<|im_start|>user\n你好，请介绍一下你自己<|im_end|>\n<|im_start|>assistant\n", "max_tokens": 100}'
+
+  {
+  "response": "你好！我是Qwen，由阿里云开发的人工智能助手。我可以回答各种问题、提供建议、进行闲聊等。有什么我可以帮助你的吗？"
+}
