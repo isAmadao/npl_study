@@ -1,0 +1,427 @@
+app:
+  description: 意图识别+RAG问答系统：支持机器学习和大模型两个知识库
+  icon: 🤖
+  icon_background: '#E0F2F1'
+  mode: workflow
+  name: 应用-意图识别RAG问答
+  use_icon_as_answer_icon: false
+dependencies:
+- current_identifier: null
+  type: marketplace
+  value:
+    marketplace_plugin_unique_identifier: langgenius/tongyi:0.0.26@4f1c4ded3d189719b7dd54e9d4e5b26f724f3632f3dfaa299491b42accc112c8
+kind: app
+version: 0.2.0
+workflow:
+  conversation_variables: []
+  environment_variables:
+  - key: ml_knowledge_base
+    value: 机器学习知识库路径
+    description: 机器学习相关知识库
+  - key: llm_knowledge_base
+    value: 大模型知识库路径
+    description: 大模型相关知识库
+  features:
+    file_upload:
+      allowed_file_extensions:
+      - .JPG
+      - .JPEG
+      - .PNG
+      - .GIF
+      - .WEBP
+      - .SVG
+      allowed_file_types:
+      - image
+      allowed_file_upload_methods:
+      - local_file
+      - remote_url
+      enabled: false
+      fileUploadConfig:
+        audio_file_size_limit: 50
+        batch_count_limit: 5
+        file_size_limit: 15
+        image_file_size_limit: 10
+        video_file_size_limit: 100
+        workflow_file_upload_limit: 10
+      image:
+        enabled: false
+        number_limits: 3
+        transfer_methods:
+        - local_file
+        - remote_url
+      number_limits: 3
+    opening_statement: ''
+    retriever_resource:
+      enabled: true
+    sensitive_word_avoidance:
+      enabled: false
+    speech_to_text:
+      enabled: false
+    suggested_questions: []
+    suggested_questions_after_answer:
+      enabled: false
+    text_to_speech:
+      enabled: false
+      language: ''
+      voice: ''
+  graph:
+    edges:
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: start
+        targetType: llm
+      id: start-source-intent_detection-target
+      source: 'start'
+      sourceHandle: source
+      target: 'intent_detection'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: conditional-group
+      id: intent_detection-source-branch_routing-target
+      source: 'intent_detection'
+      sourceHandle: source
+      target: 'branch_routing'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: conditional-group
+        targetType: llm
+      id: branch_routing-source-1750250000000-target
+      source: 'branch_routing'
+      sourceHandle: source
+      target: 'intent1_direct_llm'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: conditional-group
+        targetType: knowledge-retrieval
+      id: branch_routing-source-1750250100000-target
+      source: 'branch_routing'
+      sourceHandle: source
+      target: 'intent2_ml_retrieval'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: conditional-group
+        targetType: knowledge-retrieval
+      id: branch_routing-source-1750250200000-target
+      source: 'branch_routing'
+      sourceHandle: source
+      target: 'intent3_llm_retrieval'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: llm
+      id: intent1_direct_llm-source-1750250300000-target
+      source: 'intent1_direct_llm'
+      sourceHandle: source
+      target: 'answer_merge'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: intent2_ml_retrieval-source-1750250400000-target
+      source: 'intent2_ml_retrieval'
+      sourceHandle: source
+      target: 'answer_merge'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: knowledge-retrieval
+        targetType: llm
+      id: intent3_llm_retrieval-source-1750250500000-target
+      source: 'intent3_llm_retrieval'
+      sourceHandle: source
+      target: 'answer_merge'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    - data:
+        isInIteration: false
+        isInLoop: false
+        sourceType: llm
+        targetType: end
+      id: answer_merge-source-end-target
+      source: 'answer_merge'
+      sourceHandle: source
+      target: 'end'
+      targetHandle: target
+      type: custom
+      zIndex: 0
+    nodes:
+    - data:
+        desc: ''
+        selected: false
+        title: 开始
+        type: start
+        variables: []
+      height: 142
+      id: 'start'
+      position:
+        x: 100
+        y: 200
+      positionAbsolute:
+        x: 100
+        y: 200
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: 意图识别节点：分析用户问题，判断属于哪种意图
+        model:
+          completion_params: {}
+          mode: chat
+          name: qwen2.5-72b-instruct
+          provider: langgenius/tongyi/tongyi
+        prompt_template:
+        - id: intent_system
+          role: system
+          text: 你是一个意图识别专家。请分析用户的问题，判断其意图类型。只有三种可能：1. 机器学习相关问题；2. 大模型相关问题；3. 其他问题（非机器学习/非大模型）
+        - id: intent_user
+          role: user
+          text: '请分析以下问题的意图类型：
+
+            问题：{{#start.query#}}
+
+            请直接返回：machine_learning / llm / other'
+        selected: false
+        title: 意图识别
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: 'intent_detection'
+      position:
+        x: 100
+        y: 350
+      positionAbsolute:
+        x: 100
+        y: 350
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: 条件分支：根据意图识别结果路由到不同的处理流程
+        selected: false
+        title: 意图分支
+        type: conditional-group
+        conditions:
+        - variable_selector: []
+          value: other
+          variable_type: string
+        - variable_selector: []
+          value: machine_learning
+          variable_type: string
+        - variable_selector: []
+          value: llm
+          variable_type: string
+      height: 142
+      id: 'branch_routing'
+      position:
+        x: 100
+        y: 500
+      positionAbsolute:
+        x: 100
+        y: 500
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: 意图1：非机器学习/非大模型问题，直接调用LLM回答
+        model:
+          completion_params: {}
+          mode: chat
+          name: qwen2.5-72b-instruct
+          provider: langgenius/tongyi/tongyi
+        prompt_template:
+        - id: intent1_system
+          role: system
+          text: 你是一个通用助手，可以回答各种问题。请直接回答用户的问题。
+        - id: intent1_user
+          role: user
+          text: '用户问题：{{#start.query#}}
+
+            请直接给出回答。'
+        selected: false
+        title: 意图1-直接回答
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: 'intent1_direct_llm'
+      position:
+        x: -100
+        y: 650
+      positionAbsolute:
+        x: -100
+        y: 650
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: 意图2：机器学习相关问题，检索机器学习知识库
+        knowledge_config:
+          query_variable:
+            value_selector:
+            - start
+            - query
+            type: source
+          knowledge_id: ml_knowledge_base_id
+          retrieval_mode: single
+          top_k: 4
+          score_threshold: 0.5
+        selected: false
+        title: 意图2-机器学习检索
+        type: knowledge-retrieval
+        variables: []
+      height: 90
+      id: 'intent2_ml_retrieval'
+      position:
+        x: 100
+        y: 650
+      positionAbsolute:
+        x: 100
+        y: 650
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: 意图3：大模型相关问题，检索大模型知识库
+        knowledge_config:
+          query_variable:
+            value_selector:
+            - start
+            - query
+            type: source
+          knowledge_id: llm_knowledge_base_id
+          retrieval_mode: single
+          top_k: 4
+          score_threshold: 0.5
+        selected: false
+        title: 意图3-大模型检索
+        type: knowledge-retrieval
+        variables: []
+      height: 90
+      id: 'intent3_llm_retrieval'
+      position:
+        x: 300
+        y: 650
+      positionAbsolute:
+        x: 300
+        y: 650
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        context:
+          enabled: false
+          variable_selector: []
+        desc: 整合检索结果并生成最终答案
+        model:
+          completion_params: {}
+          mode: chat
+          name: qwen2.5-72b-instruct
+          provider: langgenius/tongyi/tongyi
+        prompt_template:
+        - id: merge_system
+          role: system
+          text: 你是一个专业的问答助手。请根据提供的上下文信息，给出准确、完整的回答。
+        - id: merge_user
+          role: user
+          text: '用户问题：{{#start.query#}}
+
+            相关信息：{{#intent2_ml_retrieval.content#}} {{#intent3_llm_retrieval.content#}}
+
+            请基于以上信息给出回答。如果相关信息不相关，请说明。'
+        selected: false
+        title: 答案整合
+        type: llm
+        variables: []
+        vision:
+          enabled: false
+      height: 90
+      id: 'answer_merge'
+      position:
+        x: 100
+        y: 800
+      positionAbsolute:
+        x: 100
+        y: 800
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    - data:
+        desc: ''
+        outputs:
+        - value_selector:
+          - answer_merge
+          - text
+          variable: output
+        selected: false
+        title: 结束
+        type: end
+      height: 90
+      id: 'end'
+      position:
+        x: 100
+        y: 950
+      positionAbsolute:
+        x: 100
+        y: 950
+      selected: false
+      sourcePosition: right
+      targetPosition: left
+      type: custom
+      width: 244
+    viewport:
+      x: 0
+      y: 0
+      zoom: 1
