@@ -1,0 +1,68 @@
+from openai import OpenAI
+import os
+import base64
+from pdf2image import convert_from_path
+from PIL import Image
+import io
+
+# 初始化OpenAI客户端
+client = OpenAI(
+    api_key=os.getenv("DASHSCOPE_API_KEY", "sk-替换为你的API密钥"),
+    base_url="https://dashscope.aliyuncs.com/compatible-mode/v1"
+)
+
+def pdf_page_to_base64(pdf_path):
+    """将PDF第一页转换为base64编码的图像"""
+    images = convert_from_path(pdf_path, first_page=1, last_page=1)
+    if not images:
+        return None
+    
+    buffer = io.BytesIO()
+    images[0].save(buffer, format='JPEG')
+    image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    return f"data:image/jpeg;base64,{image_base64}"
+
+def parse_pdf_first_page(pdf_path):
+    """
+    使用阿里云DashScope API解析PDF第一页
+    """
+    print("将PDF第一页转换为图像...")
+    image_url = pdf_page_to_base64(pdf_path)
+    if not image_url:
+        print("PDF转换失败")
+        return None
+    
+    print("调用阿里云Qwen-VL API...")
+    completion = client.chat.completions.create(
+        model="qwen-vl-plus",
+        messages=[
+            {
+                "role": "user",
+                "content": [
+                    {"type": "image_url", "image_url": {"url": image_url}},
+                    {"type": "text", "text": "请详细解析这个PDF页面的内容，包括标题、正文、图表说明等所有重要信息。"},
+                ],
+            },
+        ],
+        stream=True,
+    )
+    
+    print("\n" + "=" * 20 + "解析结果" + "=" * 20 + "\n")
+    full_response = ""
+    for chunk in completion:
+        if chunk.choices:
+            delta = chunk.choices[0].delta
+            if delta.content:
+                print(delta.content, end='', flush=True)
+                full_response += delta.content
+    
+    return full_response
+
+if __name__ == "__main__":
+    pdf_path = "应阔浩-2025自如企业级AI架构落地的思考与实践.pdf"
+    result = parse_pdf_first_page(pdf_path)
+    
+    if result:
+        with open("pdf_analysis_result.txt", "w", encoding="utf-8") as f:
+            f.write(result)
+        print("\n\n结果已保存到 pdf_analysis_result.txt")
