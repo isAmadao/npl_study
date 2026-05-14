@@ -1,0 +1,515 @@
+# 基于今天讲解的langchain 的框架，开发对本地知识库进行问答的逻辑，只需要包括文档检索 + ll"""
+import os
+from pathlib import Path
+from typing import List, Dict
+from langchain_community.document_loaders import TextLoader, DirectoryLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
+from langchain_core.documents import Document
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+
+# ==================== 配置区域 ====================
+# 模型配置（参考 Week14 教程中的配置方式）
+LLM_CONFIG = {
+    "model": "qwen-flash",
+    "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "api_key": "sk-b220c23d00d84424a07f2cf000e48920"
+}
+
+# Embedding 模型配置（使用本地 BGE 模型）
+EMBEDDING_MODEL_PATH = r"D:\代码编程\Python编译\八斗AI大模型课\新一期\models\BAAI\bge-small-zh-v1.5"
+
+# RAG 参数配置
+RAG_CONFIG = {
+    "chunk_size": 256,  # 文本块大小
+    "chunk_overlap": 20,  # 文本块重叠
+    "top_k": 5  # 检索返回的相关文档数量
+}
+
+# 数据存储路径
+VECTOR_DB_PATH = "./vector_db"
+DATA_DIR = "./data"
+
+
+# ==================== RAG 核心类 ====================
+class SimpleRAG:
+    """
+    简化的 RAG 系统，实现文档检索 + LLM 回答的核心流程
+
+    工作流程：
+    1. 加载文档 → 2. 文本分割 → 3. 向量化存储 → 4. 语义检索 → 5. LLM 生成回答
+    """
+
+    def __init__(self):
+        """初始化 RAG 系统组件"""
+        print("=" * 60)
+        print("正在初始化 RAG 系统...")
+        print("=" * 60)
+
+        # 1. 初始化 Embedding 模型
+        self.embedding_model = self._init_embedding_model()
+
+        # 2. 初始化 LLM
+        self.llm = self._init_llm()
+
+        # 3. 向量数据库和检索器
+        self.vectorstore = None
+        self.retriever = None
+
+        # 4. RAG 问答链
+        self.rag_chain = None
+
+        # 尝试加载已有的向量数据库
+        self._load_vectorstore()
+
+        print("✓ RAG 系统初始化完成\n")
+
+    def _init_embedding_model(self):
+        """
+        初始化文本嵌入模型
+
+        Returns:
+            HuggingFaceEmbeddings: 嵌入模型实例
+        """
+        # 检查本地模型路径是否存在
+        if not os.path.exists(EMBEDDING_MODEL_PATH):
+            print(f"⚠ 警告: 本地模型路径 {EMBEDDING_MODEL_PATH} 不存在")
+            print(f"  将使用在线模型 'BAAI/bge-small-zh-v1.5'")
+            model_name = "BAAI/bge-small-zh-v1.5"
+        else:
+            model_name = EMBEDDING_MODEL_PATH
+            print(f"✓ 使用本地 Embedding 模型: {model_name}")
+
+        # 创建 HuggingFace Embeddings 实例
+        embedding_model = HuggingFaceEmbeddings(
+            model_name=model_name,
+            model_kwargs={'device': 'cpu'},  # 如有 GPU 可改为 'cuda'
+            encode_kwargs={'normalize_embeddings': True}  # 归一化 embeddings
+        )
+
+        return embedding_model
+
+    def _init_llm(self):
+        """
+        初始化大语言模型
+
+        Returns:
+            ChatOpenAI: LLM 实例
+        """
+        llm = ChatOpenAI(
+            model=LLM_CONFIG["model"],
+            base_url=LLM_CONFIG["base_url"],
+            api_key=LLM_CONFIG["api_key"],
+            temperature=0.1,  # 较低的温度使回答更稳定
+        )
+        print(f"✓ LLM 初始化完成: {LLM_CONFIG['model']}")
+
+        return llm
+
+    def _load_vectorstore(self):
+        """加载已存在的向量数据库（如果存在）"""
+        if os.path.exists(VECTOR_DB_PATH):
+            try:
+                self.vectorstore = FAISS.load_local(
+                    VECTOR_DB_PATH,
+                    self.embedding_model,
+                    allow_dangerous_deserialization=True
+                )
+
+                # 创建检索器
+                self.retriever = self.vectorstore.as_retriever(
+                    search_kwargs={"k": RAG_CONFIG["top_k"]}
+                )
+
+                # 构建 RAG 链
+                self._build_rag_chain()
+
+                print(f"✓ 向量数据库加载成功: {VECTOR_DB_PATH}")
+            except Exception as e:
+                print(f"⚠ 加载向量数据库失败: {e}")
+                self.vectorstore = None
+        else:
+            print("ℹ 未找到向量数据库，需要先构建索引")
+
+    def load_documents(self, data_dir: str = DATA_DIR, pattern: str = "*.txt") -> List[Document]:
+        """
+        从指定目录加载文本文档
+
+        Args:
+            data_dir: 文档目录路径
+            pattern: 文件匹配模式（glob 格式）
+
+        Returns:
+            List[Document]: 加载的文档列表
+        """
+        print(f"\n{'=' * 60}")
+        print(f"步骤 1: 加载文档")
+        print(f"{'=' * 60}")
+        print(f"数据目录: {data_dir}")
+        print(f"文件模式: {pattern}")
+
+        # 检查目录是否存在
+        if not os.path.exists(data_dir):
+            raise FileNotFoundError(f"数据目录不存在: {data_dir}")
+
+        # 使用 DirectoryLoader 批量加载文档
+        loader = DirectoryLoader(
+            data_dir,
+            glob=pattern,
+            loader_cls=TextLoader,
+            loader_kwargs={'encoding': 'utf-8'}
+        )
+
+        documents = loader.load()
+        print(f"✓ 成功加载 {len(documents)} 个文档")
+
+        return documents
+
+    def process_and_store(self, documents: List[Document]):
+        """
+        处理文档并存储到向量数据库
+
+        流程：
+        1. 文本分割（Chunking）
+        2. 向量化（Embedding）
+        3. 存储到 FAISS
+
+        Args:
+            documents: 文档列表
+        """
+        print(f"\n{'=' * 60}")
+        print(f"步骤 2: 处理文档并构建向量索引")
+        print(f"{'=' * 60}")
+
+        # 1. 文本分割
+        print("\n正在进行文本分割...")
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=RAG_CONFIG["chunk_size"],
+            chunk_overlap=RAG_CONFIG["chunk_overlap"],
+            length_function=len,
+            separators=["\n\n", "\n", "。", "！", "？", "；", " ", ""]
+        )
+
+        chunks = text_splitter.split_documents(documents)
+        print(f"✓ 文档分割完成，共 {len(chunks)} 个文本块")
+
+        # 2. 创建向量数据库（自动进行向量化）
+        print("\n正在向量化并存储...")
+        self.vectorstore = FAISS.from_documents(
+            documents=chunks,
+            embedding=self.embedding_model
+        )
+        print(f"✓ 向量化完成")
+
+        # 3. 创建检索器
+        self.retriever = self.vectorstore.as_retriever(
+            search_kwargs={"k": RAG_CONFIG["top_k"]}
+        )
+        print(f"✓ 检索器创建完成（top_k={RAG_CONFIG['top_k']}）")
+
+        # 4. 持久化存储向量数据库
+        os.makedirs(VECTOR_DB_PATH, exist_ok=True)
+        self.vectorstore.save_local(VECTOR_DB_PATH)
+        print(f"✓ 向量数据库已保存到: {VECTOR_DB_PATH}")
+
+        # 5. 构建 RAG 问答链
+        self._build_rag_chain()
+
+    def _build_rag_chain(self):
+        """
+        构建 RAG 问答链
+
+        RAG Chain 流程：
+        用户问题 → 检索相关文档 → 格式化上下文 → 构建 Prompt → LLM → 回答
+        """
+        if self.retriever is None or self.llm is None:
+            raise ValueError("Retriever 和 LLM 必须已初始化")
+
+        # 定义 RAG 提示词模板（参考项目2的 BASIC_QA_TEMPLATE）
+        rag_template = """你是一个专业的智能助手，擅长基于给定的参考资料回答问题。
+
+    请严格遵循以下规则：
+    1. 仅根据提供的参考资料回答问题
+    2. 如果资料中没有相关信息，请明确说明"根据现有资料无法回答该问题"
+    3. 回答要准确、简洁、有条理
+    4. 可以适当引用资料中的关键信息
+
+    参考资料：
+    {context}
+
+    用户问题：{question}
+
+    请给出你的回答："""
+
+        # 创建 Prompt 模板
+        rag_prompt = ChatPromptTemplate.from_template(rag_template)
+
+        # 定义文档格式化函数
+        def format_docs(docs):
+            """将检索到的文档格式化为字符串"""
+            return "\n\n".join([doc.page_content for doc in docs])
+
+        # 构建完整的 RAG 链（使用 LangChain Expression Language - LCEL）
+        self.rag_chain = (
+                {
+                    "context": lambda x: format_docs(self.retriever.invoke(x["question"])),
+                    "question": lambda x: x["question"]
+                }
+                | rag_prompt
+                | self.llm
+                | StrOutputParser()
+        )
+
+        print("✓ RAG 问答链构建完成")
+
+    def query(self, question: str) -> str:
+        """
+        对知识库进行问答
+
+        Args:
+            question: 用户问题
+
+        Returns:
+            str: LLM 生成的回答
+        """
+        if self.rag_chain is None:
+            raise ValueError("RAG 链未初始化，请先加载文档并构建索引")
+
+        print(f"\n{'=' * 60}")
+        print(f"问题: {question}")
+        print(f"{'=' * 60}")
+
+        # 执行 RAG 问答
+        answer = self.rag_chain.invoke({"question": question})
+
+        return answer
+
+    def query_with_sources(self, question: str) -> Dict:
+        """
+        对知识库进行问答，并返回来源信息
+
+        Args:
+            question: 用户问题
+
+        Returns:
+            Dict: 包含回答和来源信息的字典
+        """
+        if self.retriever is None or self.llm is None:
+            raise ValueError("Retriever 和 LLM 必须已初始化")
+
+        print(f"\n{'=' * 60}")
+        print(f"问题: {question}")
+        print(f"{'=' * 60}")
+
+        # 1. 检索相关文档
+        print("\n正在检索相关文档...")
+        relevant_docs = self.retriever.invoke(question)
+        print(f"✓ 检索到 {len(relevant_docs)} 条相关文档")
+
+        # 2. 格式化上下文
+        context = "\n\n".join([doc.page_content for doc in relevant_docs])
+
+        # 3. 构建提示词并调用 LLM
+        rag_template = """你是一个专业的智能助手，擅长基于给定的参考资料回答问题。
+
+请严格遵循以下规则：
+1. 仅根据提供的参考资料回答问题
+2. 如果资料中没有相关信息，请明确说明"根据现有资料无法回答该问题"
+3. 回答要准确、简洁、有条理
+4. 可以适当引用资料中的关键信息
+
+参考资料：
+{context}
+
+用户问题：{question}
+
+请给出你的回答："""
+
+        rag_prompt = ChatPromptTemplate.from_template(rag_template)
+        chain = rag_prompt | self.llm | StrOutputParser()
+
+        print("\n正在生成回答...")
+        answer = chain.invoke({
+            "context": context,
+            "question": question
+        })
+
+        # 4. 提取来源信息
+        sources = []
+        for i, doc in enumerate(relevant_docs, 1):
+            source_info = {
+                "index": i,
+                "content_preview": doc.page_content[:200] + "..." if len(doc.page_content) > 200 else doc.page_content,
+                "metadata": doc.metadata
+            }
+            sources.append(source_info)
+
+        result = {
+            "question": question,
+            "answer": answer,
+            "sources": sources,
+            "source_count": len(sources)
+        }
+
+        return result
+
+    def rebuild_index(self, data_dir: str = DATA_DIR, pattern: str = "*.txt"):
+        """
+        重新构建向量索引
+
+        Args:
+            data_dir: 文档目录
+            pattern: 文件匹配模式
+        """
+        print("\n开始重新构建索引...")
+
+        # 删除旧的向量数据库
+        if os.path.exists(VECTOR_DB_PATH):
+            import shutil
+            shutil.rmtree(VECTOR_DB_PATH)
+            print(f"✓ 已删除旧的向量数据库: {VECTOR_DB_PATH}")
+
+        # 重新加载和处理文档
+        documents = self.load_documents(data_dir, pattern)
+        self.process_and_store(documents)
+
+
+# ==================== 辅助函数 ====================
+def create_sample_data():
+    """创建示例数据用于测试"""
+    os.makedirs(DATA_DIR, exist_ok=True)
+
+    sample_docs = [
+        {
+            "filename": "langchain介绍.txt",
+            "content": """LangChain 是一个用于开发由语言模型驱动的应用程序的框架。
+它提供了标准化的接口，使得开发者可以轻松地组合不同的组件。
+LangChain 支持多种语言模型，包括 OpenAI、Hugging Face、Anthropic 等。
+主要功能包括：提示词管理、链式调用、代理（Agent）、记忆管理等。
+LangChain 的核心思想是将复杂的 LLM 应用分解为可重用的组件。"""
+        },
+        {
+            "filename": "RAG技术介绍.txt",
+            "content": """RAG（Retrieval-Augmented Generation）是一种结合检索和生成的技术。
+它通过从外部知识库中检索相关信息，然后让大语言模型基于这些信息生成回答。
+RAG 的主要优势是可以利用最新的、私有的知识，而不需要重新训练模型。
+典型的 RAG 流程包括：文档加载、文本分割、向量化、存储、检索、生成。
+常用的向量数据库包括：FAISS、Chroma、Pinecone、Milvus 等。"""
+        },
+        {
+            "filename": "向量数据库.txt",
+            "content": """向量数据库是专门用于存储和检索向量数据的数据库系统。
+它将文本、图片等非结构化数据转换为向量表示（Embedding）。
+通过计算向量之间的相似度，可以实现语义级别的搜索。
+FAISS 是 Facebook 开发的开源向量相似度搜索库，性能优秀。
+向量数据库的关键指标包括：检索速度、准确率、内存占用、可扩展性。"""
+        }
+    ]
+
+    for doc in sample_docs:
+        filepath = os.path.join(DATA_DIR, doc["filename"])
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(doc["content"])
+
+    print(f"✓ 示例数据已创建到 {DATA_DIR} 目录")
+
+
+# ==================== 主程序 ====================
+def main():
+    """
+    主函数 - 演示完整的 RAG 流程
+    """
+    print("\n" + "🚀 " * 20)
+    print("基于 LangChain 的本地知识库问答系统")
+    print("🚀 " * 20 + "\n")
+
+    # 1. 初始化 RAG 系统
+    rag = SimpleRAG()
+
+    # 2. 如果还没有向量数据库，先构建
+    if rag.vectorstore is None:
+        print("\n" + "=" * 60)
+        print("检测到未构建索引，开始初始化知识库")
+        print("=" * 60)
+
+        # 检查数据目录是否存在
+        if not os.path.exists(DATA_DIR):
+            print(f"\n⚠ 数据目录 {DATA_DIR} 不存在")
+            choice = input("是否创建示例数据进行测试？(y/n): ").strip().lower()
+
+            if choice == 'y':
+                create_sample_data()
+            else:
+                print("请手动创建数据目录并放入文档后重新运行")
+                return
+
+        try:
+            # 加载并处理文档
+            documents = rag.load_documents(DATA_DIR, pattern="*.txt")
+            rag.process_and_store(documents)
+        except Exception as e:
+            print(f"\n❌ 构建索引失败: {e}")
+            return
+
+    # 3. 进入问答循环
+    print("\n" + "=" * 60)
+    print("知识库已就绪，开始问答")
+    print("=" * 60)
+    print("💡 提示:")
+    print("  - 直接输入问题进行问答")
+    print("  - 输入 'sources' 查看带来源的回答")
+    print("  - 输入 'rebuild' 重新构建索引")
+    print("  - 输入 'quit' 或 'exit' 退出")
+    print("=" * 60)
+
+    while True:
+        try:
+            question = input("\n❓ 请输入你的问题: ").strip()
+
+            # 退出条件
+            if question.lower() in ['quit', 'exit', 'q']:
+                print("\n👋 再见！感谢使用 RAG 问答系统")
+                break
+
+            # 空输入跳过
+            if not question:
+                continue
+
+            # 重新构建索引
+            if question.lower() == 'rebuild':
+                rag.rebuild_index()
+                continue
+
+            # 带来源的问答
+            if question.lower() == 'sources':
+                print("\n" + "=" * 60)
+                test_question = input("请输入测试问题: ").strip()
+                if test_question:
+                    result = rag.query_with_sources(test_question)
+                    print(f"\n✅ 回答:\n{result['answer']}")
+                    print(f"\n📚 参考来源 ({result['source_count']} 条):")
+                    for source in result['sources']:
+                        print(f"\n--- 来源 {source['index']} ---")
+                        print(f"内容预览: {source['content_preview']}")
+                        print(f"元数据: {source['metadata']}")
+                continue
+
+            # 普通问答
+            answer = rag.query(question)
+            print(f"\n✅ 回答:\n{answer}")
+
+        except KeyboardInterrupt:
+            print("\n\n👋 程序被用户中断")
+            break
+        except Exception as e:
+            print(f"\n❌ 发生错误: {e}")
+            import traceback
+            traceback.print_exc()
+
+
+# ==================== 程序入口 ====================
+if __name__ == "__main__":
+    main()
