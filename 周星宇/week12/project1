@@ -1,0 +1,132 @@
+import sqlite3
+from sqlalchemy import create_engine, MetaData, Table, text
+import re
+import json
+
+
+class NL2SQLAgent:
+    def __init__(self, db_path='chinook.db'):
+        """
+        初始化NL2SQL Agent
+
+        Args:
+            db_path: SQLite数据库文件路径
+        """
+        self.db_path = db_path
+        self.engine = create_engine(f'sqlite:///{db_path}')
+        self.metadata = MetaData()
+
+        # 连接数据库获取表结构
+        self.metadata.reflect(bind=self.engine)
+        self.tables = list(self.metadata.tables.keys())
+
+    def get_all_tables_count(self):
+        """获取数据库中的表数量"""
+        query = "SELECT COUNT(*) FROM sqlite_master WHERE type='table';"
+        with self.engine.connect() as conn:
+            # 修改点2: 使用 text() 包装 query
+            result = conn.execute(text(query))
+            count = result.fetchone()[0]
+        return count
+
+    def get_employees_count(self):
+        """获取员工表中的记录数量"""
+        query = "SELECT COUNT(*) FROM employees;"
+        with self.engine.connect() as conn:
+            # 修改点2: 使用 text() 包装 query
+            result = conn.execute(text(query))
+            count = result.fetchone()[0]
+        return count
+
+    def get_customers_and_employees_count(self):
+        """获取客户和员工的数量"""
+        with self.engine.connect() as conn:
+            # 查询客户数量
+            customers_query = "SELECT COUNT(*) FROM customers;"
+            # 修改点2: 使用 text() 包装
+            customers_result = conn.execute(text(customers_query))
+            customers_count = customers_result.fetchone()[0]
+
+            # 查询员工数量
+            employees_query = "SELECT COUNT(*) FROM employees;"
+            # 修改点2: 使用 text() 包装
+            employees_result = conn.execute(text(employees_query))
+            employees_count = employees_result.fetchone()[0]
+
+        return customers_count, employees_count
+
+    def answer_question_1(self):
+        """
+        问题1: 数据库中总共有多少张表
+        """
+        count = self.get_all_tables_count()
+        print(f"问题1: 数据库中总共有 {count} 张表")
+        print("相关SQL查询:")
+        print("SELECT COUNT(*) FROM sqlite_master WHERE type='table';")
+        print("-" * 50)
+        return count
+
+    def answer_question_2(self):
+        """
+        问题2: 员工表中有多少条记录
+        """
+        count = self.get_employees_count()
+        print(f"问题2: 员工表中有 {count} 条记录")
+        print("相关SQL查询:")
+        print("SELECT COUNT(*) FROM employees;")
+        print("-" * 50)
+        return count
+
+    def answer_question_3(self):
+        """
+        问题3: 在数据库中所有客户个数和员工个数分别是多少
+        """
+        customers_count, employees_count = self.get_customers_and_employees_count()
+        print(f"问题3: 客户个数: {customers_count}, 员工个数: {employees_count}")
+        print("相关SQL查询:")
+        print("SELECT COUNT(*) FROM customers;")
+        print("SELECT COUNT(*) FROM employees;")
+        print("-" * 50)
+        return customers_count, employees_count
+
+    def show_database_schema(self):
+        """
+        显示数据库模式信息
+        """
+        print("数据库表结构概览:")
+        for table_name in self.tables:
+            print(f"\n表名: {table_name}")
+            table_obj = self.metadata.tables[table_name]
+            for column in table_obj.columns:
+                print(f"  - {column.name}: {column.type}")
+        print("-" * 50)
+
+
+def main():
+    """
+    主函数 - 演示NL2SQL Agent的功能
+    """
+    try:
+        agent = NL2SQLAgent('04_SQL-Code-Agent-Demo/chinook.db')
+
+        print("=" * 60)
+        print("Chinook数据库问答系统 (NL2SQL Agent)")
+        print("=" * 60)
+
+        # 显示数据库基本信息
+        agent.show_database_schema()
+
+        # 回答三个指定问题
+        agent.answer_question_1()
+        agent.answer_question_2()
+        agent.answer_question_3()
+
+        print("系统成功回答了所有三个问题！")
+
+    except Exception as e:
+        print(f"错误: 无法连接到数据库或执行查询 - {e}")
+        print("请确保 chinook.db 文件存在且路径正确")
+
+
+if __name__ == "__main__":
+    main()
