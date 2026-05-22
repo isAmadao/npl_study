@@ -1,0 +1,8 @@
+【第十五周作业】
+1，使用claude code 结合 05-multimodal-rag-chatbot 的需求，需要你 vibe coding一份，需要实现现有接口；
+    写清楚需求
+    写测试逻辑
+    cc 逐步完成，架构 和 初步代码完成即可。
+
+作业2，阅读mineru 论文和 mineru 的使用； 尝试进行文档解析，对比下mineru和 pdfplumber的效果差异，文字回答。
+    https://mineru.net/OpenSourceTools/Extractor
