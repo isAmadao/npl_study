@@ -1,0 +1,9 @@
+streamlit
+sqlalchemy
+kafka-python
+pymilvus
+sentence-transformers
+transformers
+pdfplumber
+Pillow
+
