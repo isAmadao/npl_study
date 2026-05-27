@@ -1,0 +1,25 @@
+{
+  "game_id": "game_20260519_012449",
+  "start_time": "2026-05-19 01:24:49",
+  "end_time": "2026-05-19 01:25:27",
+  "config_name": "standard_6",
+  "role_assignment": {
+    "0": "werewolf",
+    "1": "hunter",
+    "2": "seer",
+    "3": "villager",
+    "4": "werewolf",
+    "5": "witch"
+  },
+  "player_styles": {
+    "0": "bold",
+    "1": "cautious",
+    "2": "balanced",
+    "3": "cautious",
+    "4": "bold",
+    "5": "random"
+  },
+  "dialogues": [],
+  "winner": "evil",
+  "death_order": []
+}

@@ -1,0 +1,24 @@
+{
+  "game_id": "game_20260519_105139",
+  "start_time": "2026-05-19 10:51:39",
+  "end_time": "2026-05-19 10:53:32",
+  "config_name": "standard_6",
+  "role_assignment": {
+    "0": "witch",
+    "1": "seer",
+    "2": "werewolf",
+    "3": "villager",
+    "4": "hunter",
+    "5": "werewolf"
+  },
+  "player_styles": {
+    "0": "bold",
+    "1": "cautious",
+    "2": "balanced",
+    "3": "cautious",
+    "4": "bold",
+    "5": "random"
+  },
+  "phase_logs": [],
+  "errors": []
+}

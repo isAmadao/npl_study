@@ -1,0 +1,290 @@
+{
+  "game_id": "game_20260519_084724",
+  "start_time": "2026-05-19 08:47:24",
+  "end_time": "2026-05-19 08:48:20",
+  "config_name": "standard_6",
+  "role_assignment": {
+    "0": "villager",
+    "1": "werewolf",
+    "2": "hunter",
+    "3": "witch",
+    "4": "seer",
+    "5": "werewolf"
+  },
+  "player_styles": {
+    "0": "bold",
+    "1": "cautious",
+    "2": "balanced",
+    "3": "cautious",
+    "4": "bold",
+    "5": "random"
+  },
+  "dialogues": [
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "player_id": 1,
+      "player_name": "玩家2",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "night_kill",
+      "content": null,
+      "target": 2,
+      "reasoning": "作为谨慎型狼人，我选择击杀玩家3（ID: 2）。该玩家在发言中未表现出明显异常，但为避免后续被怀疑，需优先排除潜在威胁。选择中间位置的玩家可降低自身暴露风险，同时确保团队行动不被过度关注。"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "night_kill",
+      "content": null,
+      "target": 3,
+      "reasoning": "直觉告诉我，今晚应该随机选一个玩家。选玩家4（ID: 3）吧，反正也是随机的，没特别理由。"
+    },
+    {
+      "day": 1,
+      "phase": "预言家查验",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Seer",
+      "decision_style": null,
+      "action": "seer_check",
+      "content": null,
+      "target": 1,
+      "reasoning": "作为大胆型预言家，我选择查验玩家2（ID: 1）。虽然昨晚狼人选择了击杀玩家3（ID: 2），但根据我的直觉和对局势的判断，玩家2可能有隐藏的异常行为。他作为被狼人‘自曝’式击杀目标，反而更值得怀疑——狼人往往故意让某些玩家成为‘诱饵’来混淆视听。我决定冒险查验他，以获取关键信息并快速推进局势。"
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 0,
+      "player_name": "玩家1",
+      "role": "Villager",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家注意了！昨晚的死亡信息非常关键——玩家3（ID: 2）被击杀，而根据预言家玩家5（ID: 4）的查验结果，玩家2（ID: 1）是狼人！这说明狼人团队已经暴露了他们的目标，但更关键的是，他们故意让玩家3成为‘诱饵’，目的就是混淆视听。为什么？因为如果狼人真想隐藏身份，就不会把一个无辜者当目标去杀，反而会选一个可能引起怀疑的人。现在玩家2被预言家查出是狼人，他却还在场上，这太可疑了！我大胆推断：玩家2就是狼人，而且他是今晚的主谋之一！我不怕误杀，因为我相信真相只有一个！接下来我们一定要彻底清算这个狼人，否则今天晚上还会有人死！我提议直接投票处决玩家2，不给任何狡辩机会！谁支持我？站出来一起带节奏！",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 1,
+      "player_name": "玩家2",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家冷静一下。昨晚玩家3（ID: 2）被击杀，这是事实。现在玩家1（ID: 0）声称预言家查验出玩家2（ID: 1）是狼人，但这个结论我持保留态度。首先，预言家的查验结果是否可信需要验证——如果查验对象是狼人，那他可能是在误导我们；如果是好人，那他为何要查一个明显被狼人针对的目标？其次，从行为逻辑看，狼人通常不会故意让一个无辜者成为‘诱饵’来混淆视听，因为这反而会暴露自己。更合理的解释是：玩家2（ID: 1）作为被杀目标，只是恰好处于中间位置，而真正的问题在于，为什么玩家5（ID: 4）能这么快就做出判断？他的查验结果是否经过深思熟虑？我建议暂时不要轻易下定论，尤其不能直接投票处决某人。目前信息有限，我们应保持谨慎，避免误伤好人。至于谁可能是狼人，我不排除任何人，但也不会盲目跟风。希望接下来大家能理性讨论，别被情绪带偏。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 3,
+      "player_name": "玩家4",
+      "role": "Witch",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家好，我是玩家4（ID: 3），作为女巫，我今晚的立场是谨慎行事。目前的情况是：玩家3（ID: 2）被击杀，预言家查验出玩家2（ID: 1）为狼人。但我要提醒大家，预言家的查验结果虽然重要，但也可能存在误判或被误导的风险。尤其是当查验对象恰好是被狼人‘自曝’式针对的目标时，这种信息需要更审慎地对待。我观察到玩家1（ID: 0）在发言中情绪激动，强烈要求立即处决玩家2，这虽然可能是出于正义感，但也可能带有带节奏的倾向。作为善良阵营的一员，我主张保持冷静，避免因情绪化判断而误伤好人。目前没有足够证据确凿证明玩家2就是狼人，因此我不建议立刻投票处决任何人。我会继续观察后续发言和行为，等待更多信息。如果明天有新的线索出现，再做决定也不迟。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Seer",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家听好了！昨晚的死亡信息和预言家的查验结果已经足够清晰——玩家3（ID: 2）被击杀，而我作为预言家，当晚查验了玩家2（ID: 1），结果明确显示：他是狼人！这不是猜测，是铁证！为什么有人还敢质疑？因为狼人想混淆视听，他们故意让玩家3成为‘诱饵’，目的就是让我们怀疑预言家的判断，甚至逼我们自乱阵脚。但我要说：越是这种‘反常’的操作，越暴露了他们的恐惧！玩家2被选为击杀目标，却在场上大放厥词，说什么‘保持冷静’、‘别被情绪带偏’——这根本就是典型的狼人话术！他是在试图制造混乱，转移焦点。而玩家1（ID: 0）的发言虽然激烈，但他恰恰抓住了核心矛盾，这才是真正的理性！我不怕误杀，我只怕放过一个狼人！今天晚上如果再不行动，下一个死的就是我们自己！我宣布：玩家2（ID: 1）就是今晚的主狼！我不接受任何辩解，也不需要投票犹豫！谁跟我一起，立刻处决这个狼人，清理门户！现在就投票，别给狼人任何喘息的机会！",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "speech",
+      "content": "我感觉今天这局有点玄乎，大家说得都挺有道理，但我就是觉得哪儿不对劲。玩家2（ID: 1）被预言家查出来是狼人，可我觉得这太巧了——一个被杀的玩家，偏偏被查成狼人，这不像是巧合，倒像是有人在故意引导节奏。我刚才听玩家1和玩家5吵得那么凶，一个说要立刻处决，一个说铁证如山，可他们俩怎么这么同步？是不是串通好了？我不信！反正我是随机发言，谁也别想让我跟着瞎起哄。我建议先别急着投，让女巫再观察一下，说不定今晚还有新线索。至于狼人嘛……我看谁都像，但又不敢肯定。反正我不会站队，也不会乱咬人，大家自己看着办吧。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "投票",
+      "player_id": 0,
+      "player_name": "玩家1",
+      "role": "Villager",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 1,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "投票",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Seer",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 1,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "投票",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 0,
+      "reasoning": null
+    },
+    {
+      "day": 2,
+      "phase": "狼人杀人",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "night_kill",
+      "content": null,
+      "target": 3,
+      "reasoning": "直觉告诉我，今晚应该随机选一个玩家。选玩家4（ID: 3）吧，反正也是随机的，没特别理由。"
+    },
+    {
+      "day": 2,
+      "phase": "预言家查验",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Seer",
+      "decision_style": null,
+      "action": "seer_check",
+      "content": null,
+      "target": 5,
+      "reasoning": "作为大胆型预言家，我必须主动出击。昨晚玩家6（ID: 5）在发言中表现极度模糊，声称‘谁也别想让我跟着瞎起哄’，实则是在刻意回避责任、制造混乱，这是典型的狼人话术。他不仅没有提供任何有效信息，反而试图煽动对其他玩家的不信任。结合昨晚狼人已击杀玩家4（ID: 3），而玩家6却依然存活且未被查验，极有可能是隐藏的狼人。我决定冒险查验玩家6，以确认其身份——如果他是狼人，我们就能直接锁定主谋；即使误查，我也愿意承担风险，因为迟疑只会让狼人更加猖狂。今晚必须打破被动局面，用行动撕开真相！"
+    },
+    {
+      "day": 2,
+      "phase": "公开演讲",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Seer",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家听好了！昨晚的死亡信息和我的查验结果已经彻底撕开了真相的面具——玩家6（ID: 5）就是狼人！没错，我刚刚再次查验了他，结果明确：他是狼！这不仅仅是猜测，是铁证！为什么？因为昨晚狼人杀了玩家4（ID: 3），而玩家6却在场上装死、装糊涂，说什么‘谁也别想让我跟着瞎起哄’，这根本就是典型的狼人话术！他不站队、不发言、不提供任何线索，目的就是为了隐藏自己，制造混乱，让我们内讧！而我作为预言家，绝不允许这种狡猾的家伙继续逍遥法外！我之前查验玩家2（ID: 1）是狼人，那是因为他被杀目标，但今天我必须更进一步——玩家6才是真正的主狼！他不仅存活至今，还刻意回避责任，甚至试图煽动对其他玩家的不信任。我不怕误杀，我只怕放过一个狼人！现在，我们已经掌握了两份确凿的查验结果：玩家2是狼，玩家6也是狼！这意味着狼人团队至少有两个成员！所以，我宣布：玩家6就是今晚的主谋！谁跟我一起，立刻投票处决他，清理门户！不要犹豫，不要退缩，否则下一个死的就是我们自己！",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 2,
+      "phase": "公开演讲",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "speech",
+      "content": "我感觉今天这局真是越来越乱了，大家说得都挺有道理，但我就是觉得哪儿不对劲。玩家5（ID: 4）说自己查出了两个狼人，一个说玩家2是狼，一个说玩家6是狼，可他怎么这么快就翻来覆去地查？昨晚他查了玩家1，今天又查了玩家5，这不像是在找真相，倒像是在给自己找理由。而且你们看，玩家6（ID: 5）明明被查成狼人，可他发的言一直很模糊，说什么‘谁也别想让我跟着瞎起哄’，这不就是典型的狼人话术吗？装无辜、制造混乱，还煽动大家互相怀疑。但我要说一句：我不信！反正我是随机发言，谁也别想让我跟着瞎起哄。我觉得现在最可疑的是玩家5，他太急着站队了，一上来就说铁证如山，结果查来查去全是狼人，这不像是预言家，倒像是在演戏。我建议先别急着投，让女巫再观察一下，说不定今晚还有新线索。至于狼人嘛……我看谁都像，但又不敢肯定。反正我不会站队，也不会乱咬人，大家自己看着办吧。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 2,
+      "phase": "投票",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Seer",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 5,
+      "reasoning": null
+    },
+    {
+      "day": 2,
+      "phase": "投票",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 4,
+      "reasoning": null
+    },
+    {
+      "day": 3,
+      "phase": "狼人杀人",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "night_kill",
+      "content": null,
+      "target": 4,
+      "reasoning": "直觉告诉我，今晚应该随机选一个玩家。选玩家5（ID: 4）吧，反正也是随机的，没特别理由。"
+    },
+    {
+      "day": 3,
+      "phase": "预言家查验",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Seer",
+      "decision_style": null,
+      "action": "seer_check",
+      "content": null,
+      "target": 5,
+      "reasoning": "作为大胆型预言家，我必须主动出击。昨晚狼人再次击杀玩家5（ID: 4），而玩家6（ID: 5）在发言中表现极度模糊，刻意回避责任，制造混乱，这是典型的狼人话术。他不仅没有提供任何有效信息，反而试图煽动对其他玩家的不信任。结合昨晚狼人已击杀玩家4（ID: 3），而玩家6却依然存活且未被查验，极有可能是隐藏的狼人。我决定冒险查验玩家6，以确认其身份——如果他是狼人，我们就能直接锁定主谋；即使误查，我也愿意承担风险，因为迟疑只会让狼人更加猖狂。今晚必须打破被动局面，用行动撕开真相！"
+    }
+  ],
+  "winner": "evil",
+  "death_order": [
+    {
+      "player_id": 2,
+      "player_name": "玩家3",
+      "role": "Hunter",
+      "cause": "night_kill",
+      "day": 1
+    },
+    {
+      "player_id": 1,
+      "player_name": "玩家2",
+      "role": "Werewolf",
+      "cause": "vote",
+      "day": 1
+    },
+    {
+      "player_id": 3,
+      "player_name": "玩家4",
+      "role": "Witch",
+      "cause": "night_kill",
+      "day": 2
+    },
+    {
+      "player_id": 0,
+      "player_name": "玩家1",
+      "role": "Villager",
+      "cause": "night_kill",
+      "day": 2
+    },
+    {
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Seer",
+      "cause": "night_kill",
+      "day": 3
+    }
+  ]
+}
