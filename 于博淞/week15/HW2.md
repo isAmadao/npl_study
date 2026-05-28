@@ -1,0 +1,2 @@
+- pdfplumber 轻量、零依赖、纯 CPU、对简单的原生文本 PDF 和规整带框表格又快又准，适合做精确坐标级抽取；
+- MinerU 重（需模型权重+GPU），但在扫描件、公式、复杂表格、多栏版面上明显更强，且直接产出适合喂给大模型的结构化 Markdown/JSON。选型上：结构简单选 pdfplumber，文档复杂或要做 RAG/Agent 选 MinerU。

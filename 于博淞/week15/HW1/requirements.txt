@@ -1,0 +1,23 @@
+fastapi
+uvicorn[standard]
+sqlalchemy
+pydantic-settings
+python-multipart
+python-dotenv
+
+# Kafka
+kafka-python
+
+# Vector DB
+pymilvus
+
+# Embedding models
+torch
+transformers
+Pillow
+
+# LLM API (Qwen-VL via OpenAI-compatible endpoint)
+openai
+
+# Evaluation
+httpx

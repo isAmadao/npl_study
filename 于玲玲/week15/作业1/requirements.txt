@@ -1,0 +1,27 @@
+# ========== Web 框架 ==========
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9
+
+# ========== 数据库 / 向量库 ==========
+pymilvus>=2.4.0
+# milvus-lite 已包含在 pymilvus>=2.4.0 中
+
+# ========== 消息队列 ==========
+kafka-python>=2.0.2
+
+# ========== 模型推理 ==========
+torch>=2.0.0
+transformers>=4.40.0
+sentence-transformers>=3.0.0
+pillow>=10.0.0
+
+# ========== PDF 解析 (MinerU 降级方案) ==========
+PyMuPDF>=1.24.0
+
+# ========== HTTP 客户端 ==========
+requests>=2.31.0
+
+# ========== 工具 ==========
+numpy>=1.24.0
+pydantic>=2.0.0
