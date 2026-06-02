@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+redis
+sentence-transformers
+python-dotenv
+jinja2
+httpx
+pytest
+pytest-asyncio
+pytest-cov
