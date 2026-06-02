@@ -1,0 +1,961 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>简易版 RedisVL - V0.6.0</title>
+    <style>
+      :root {
+        --bg-top: #f2efe8;
+        --bg-bottom: #dfe8f4;
+        --surface: rgba(255, 255, 255, 0.88);
+        --surface-strong: #ffffff;
+        --text: #18212d;
+        --muted: #5c6678;
+        --line: rgba(33, 54, 83, 0.12);
+        --shadow: 0 20px 60px rgba(35, 54, 82, 0.12);
+        --primary: #194c7f;
+        --primary-soft: #e5eef8;
+        --success: #2b7d4e;
+        --success-soft: #e8f7ee;
+        --warning: #c7732d;
+        --warning-soft: #fff2e4;
+        --danger: #b54242;
+        --danger-soft: #fdeaea;
+        --timeline: #8aa2bf;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(25, 76, 127, 0.15), transparent 28%),
+          radial-gradient(circle at top right, rgba(199, 115, 45, 0.14), transparent 24%),
+          linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 24px;
+        border: 1px solid rgba(255, 255, 255, 0.45);
+        border-radius: 28px;
+        pointer-events: none;
+      }
+
+      main {
+        width: min(1180px, calc(100% - 32px));
+        margin: 28px auto 40px;
+      }
+
+      .hero,
+      .panel,
+      .card,
+      .timeline-panel {
+        backdrop-filter: blur(16px);
+        background: var(--surface);
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        box-shadow: var(--shadow);
+      }
+
+      .hero {
+        border-radius: 24px;
+        padding: 28px;
+        margin-bottom: 18px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(25, 76, 127, 0.1);
+        color: var(--primary);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 18px 0 10px;
+        font-size: clamp(30px, 4vw, 48px);
+        line-height: 1.05;
+      }
+
+      .subtitle {
+        max-width: 760px;
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.7;
+        font-size: 15px;
+      }
+
+      .hero-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 20px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-height: 38px;
+        padding: 8px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .chip strong {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      .panel {
+        border-radius: 22px;
+        padding: 22px;
+        margin-bottom: 18px;
+      }
+
+      .control-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: flex-start;
+        margin-bottom: 18px;
+      }
+
+      .control-head h2,
+      .timeline-panel h2 {
+        margin: 0 0 6px;
+        font-size: 20px;
+      }
+
+      .control-head p,
+      .timeline-panel p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.6;
+        font-size: 14px;
+      }
+
+      .input-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.3fr) 260px;
+        gap: 14px;
+        margin-bottom: 16px;
+      }
+
+      .field {
+        display: grid;
+        gap: 8px;
+      }
+
+      .field label {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      input[type="text"] {
+        width: 100%;
+        min-height: 52px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.92);
+        padding: 14px 16px;
+        font-size: 14px;
+        color: var(--text);
+      }
+
+      input[type="text"]:focus {
+        outline: 2px solid rgba(25, 76, 127, 0.14);
+        border-color: rgba(25, 76, 127, 0.32);
+      }
+
+      .button-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      button {
+        min-height: 48px;
+        border: 0;
+        border-radius: 14px;
+        padding: 0 18px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.16s ease, opacity 0.16s ease, background 0.16s ease;
+      }
+
+      button:hover:not(:disabled) {
+        transform: translateY(-1px);
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .primary-button {
+        background: linear-gradient(135deg, #194c7f 0%, #2b6aa8 100%);
+        color: #fff;
+      }
+
+      .secondary-button {
+        background: rgba(25, 76, 127, 0.08);
+        color: var(--primary);
+      }
+
+      .danger-button {
+        background: rgba(181, 66, 66, 0.12);
+        color: var(--danger);
+      }
+
+      .status {
+        min-height: 22px;
+        margin: 14px 0 0;
+        color: var(--muted);
+        line-height: 1.6;
+        font-size: 14px;
+      }
+
+      .status.loading::after {
+        content: " ...";
+        animation: dots 1.2s steps(4, end) infinite;
+      }
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+      }
+
+      .card {
+        border-radius: 20px;
+        padding: 18px;
+        border: 1px solid transparent;
+        min-height: 240px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        transition: border-color 0.2s ease, transform 0.2s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-2px);
+      }
+
+      .card.hit {
+        border-color: rgba(43, 125, 78, 0.24);
+      }
+
+      .card.miss {
+        border-color: rgba(92, 102, 120, 0.16);
+      }
+
+      .card.semantic-miss {
+        border-color: rgba(199, 115, 45, 0.24);
+      }
+
+      .card.error {
+        border-color: rgba(181, 66, 66, 0.3);
+      }
+
+      .card-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+      }
+
+      .card-title {
+        display: flex;
+        gap: 12px;
+      }
+
+      .card-mark {
+        width: 38px;
+        height: 38px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(25, 76, 127, 0.1);
+        color: var(--primary);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        flex-shrink: 0;
+      }
+
+      .card-title h3 {
+        margin: 0 0 4px;
+        font-size: 17px;
+      }
+
+      .card-title p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .state {
+        display: inline-flex;
+        align-items: center;
+        min-height: 32px;
+        padding: 0 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .state.hit {
+        background: var(--success-soft);
+        color: var(--success);
+      }
+
+      .state.miss {
+        background: rgba(92, 102, 120, 0.12);
+        color: var(--muted);
+      }
+
+      .state.warning {
+        background: var(--warning-soft);
+        color: var(--warning);
+      }
+
+      .state.error {
+        background: var(--danger-soft);
+        color: var(--danger);
+      }
+
+      .detail {
+        margin: 0;
+        color: var(--text);
+        line-height: 1.7;
+        font-size: 14px;
+        white-space: pre-line;
+      }
+
+      .timeline-panel {
+        border-radius: 24px;
+        padding: 22px;
+        margin-top: 18px;
+      }
+
+      .timeline-head {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: flex-start;
+        margin-bottom: 18px;
+      }
+
+      .timeline-count {
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(25, 76, 127, 0.08);
+        color: var(--primary);
+        font-size: 13px;
+      }
+
+      .timeline-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 12px;
+      }
+
+      .timeline-item {
+        display: grid;
+        grid-template-columns: 16px minmax(0, 1fr);
+        gap: 14px;
+      }
+
+      .timeline-dot {
+        position: relative;
+        width: 16px;
+        display: flex;
+        justify-content: center;
+      }
+
+      .timeline-dot::before {
+        content: "";
+        width: 10px;
+        height: 10px;
+        margin-top: 8px;
+        border-radius: 50%;
+        background: var(--timeline);
+        box-shadow: 0 0 0 4px rgba(138, 162, 191, 0.15);
+      }
+
+      .timeline-dot::after {
+        content: "";
+        position: absolute;
+        top: 20px;
+        bottom: -18px;
+        width: 1px;
+        background: rgba(138, 162, 191, 0.36);
+      }
+
+      .timeline-item:last-child .timeline-dot::after {
+        display: none;
+      }
+
+      .timeline-body {
+        border-radius: 16px;
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.72);
+        padding: 14px 16px;
+      }
+
+      .timeline-time {
+        display: inline-block;
+        margin-bottom: 8px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .timeline-question,
+      .timeline-answer {
+        margin: 0;
+        line-height: 1.7;
+        font-size: 14px;
+      }
+
+      .timeline-answer {
+        color: var(--muted);
+        margin-top: 6px;
+      }
+
+      .empty-state {
+        border: 1px dashed var(--line);
+        border-radius: 18px;
+        padding: 22px;
+        color: var(--muted);
+        text-align: center;
+        background: rgba(255, 255, 255, 0.55);
+      }
+
+      @media (max-width: 900px) {
+        .input-grid,
+        .cards {
+          grid-template-columns: 1fr;
+        }
+
+        .control-head,
+        .timeline-head {
+          flex-direction: column;
+        }
+
+        .hero,
+        .panel,
+        .timeline-panel {
+          padding: 18px;
+        }
+
+        body::before {
+          inset: 12px;
+        }
+      }
+
+      @keyframes dots {
+        0% {
+          content: " .";
+        }
+        33% {
+          content: " ..";
+        }
+        66% {
+          content: " ...";
+        }
+        100% {
+          content: " ....";
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section class="hero">
+        <span class="eyebrow">RedisVL Demo / V0.6.0</span>
+        <h1>四个模块已经接到同一条请求链路里</h1>
+        <p class="subtitle">
+          当前页面用于直观观察 EmbeddingsCache、SemanticCache、SemanticMessageHistory 和 SemanticRouter
+          的联调效果，包括会话切换、最近对话时间线、语义缓存清理和单次响应耗时。
+        </p>
+        <div class="hero-meta">
+          <span class="chip">当前 Session <strong id="activeSessionText">default-session</strong></span>
+          <span class="chip">响应耗时 <strong id="responseTimeText">--</strong></span>
+          <span class="chip">调用顺序 <strong id="flowText">等待请求</strong></span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="control-head">
+          <div>
+            <h2>交互面板</h2>
+            <p>发送问题即可触发 4 个模块；切换 Session 后会自动刷新当前会话最近 5 轮历史。</p>
+          </div>
+        </div>
+
+        <div class="input-grid">
+          <div class="field">
+            <label for="questionInput">问题</label>
+            <input id="questionInput" type="text" placeholder="输入你的问题，例如：Python 列表怎么排序" />
+          </div>
+          <div class="field">
+            <label for="sessionInput">Session ID</label>
+            <input id="sessionInput" type="text" placeholder="例如 demo-session-a" />
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button id="sendButton" class="primary-button" type="button">发送问题</button>
+          <button id="clearSemanticButton" class="secondary-button" type="button">清除语义缓存</button>
+          <button id="clearHistoryButton" class="danger-button" type="button">清除当前历史</button>
+        </div>
+
+        <p id="statusText" class="status">等待输入。</p>
+      </section>
+
+      <section class="cards">
+        <article class="card miss" id="embeddingsCard">
+          <div class="card-head">
+            <div class="card-title">
+              <span class="card-mark">EC</span>
+              <div>
+                <h3>EmbeddingsCache</h3>
+                <p>精确命中同一问题的向量缓存，减少重复向量化。</p>
+              </div>
+            </div>
+            <span class="state miss" id="embeddingsState">待请求</span>
+          </div>
+          <p class="detail" id="embeddingsDetail">发送问题后显示向量维度、前 5 个值和命中状态。</p>
+        </article>
+
+        <article class="card miss" id="semanticCard">
+          <div class="card-head">
+            <div class="card-title">
+              <span class="card-mark">SC</span>
+              <div>
+                <h3>SemanticCache</h3>
+                <p>根据语义距离决定是否直接复用已有回复。</p>
+              </div>
+            </div>
+            <span class="state miss" id="semanticState">待请求</span>
+          </div>
+          <p class="detail" id="semanticDetail">发送问题后显示距离、缓存问题和回复内容。</p>
+        </article>
+
+        <article class="card miss" id="messageHistoryCard">
+          <div class="card-head">
+            <div class="card-title">
+              <span class="card-mark">MH</span>
+              <div>
+                <h3>SemanticMessageHistory</h3>
+                <p>按 session 保留历史，并显示本轮相关语义历史。</p>
+              </div>
+            </div>
+            <span class="state miss" id="messageHistoryState">待请求</span>
+          </div>
+          <p class="detail" id="messageHistoryDetail">发送问题后显示本轮存储、相关历史条数和最近历史概况。</p>
+        </article>
+
+        <article class="card miss" id="routerCard">
+          <div class="card-head">
+            <div class="card-title">
+              <span class="card-mark">SR</span>
+              <div>
+                <h3>SemanticRouter</h3>
+                <p>将问题匹配到预定义语义路由，并给出参考短语。</p>
+              </div>
+            </div>
+            <span class="state miss" id="routerState">待请求</span>
+          </div>
+          <p class="detail" id="routerDetail">发送问题后显示匹配路由、距离和参考短语。</p>
+        </article>
+      </section>
+
+      <section class="timeline-panel">
+        <div class="timeline-head">
+          <div>
+            <h2>最近 5 轮会话时间线</h2>
+            <p>切换 Session 会自动刷新。清除当前历史后，这里会立即回到空状态。</p>
+          </div>
+          <span class="timeline-count" id="timelineCount">0 条记录</span>
+        </div>
+        <div id="timelineContainer" class="empty-state">当前 Session 还没有历史对话。</div>
+      </section>
+    </main>
+
+    <script>
+      const SESSION_STORAGE_KEY = "redisvl-demo-session-id";
+
+      const questionInput = document.getElementById("questionInput");
+      const sessionInput = document.getElementById("sessionInput");
+      const sendButton = document.getElementById("sendButton");
+      const clearSemanticButton = document.getElementById("clearSemanticButton");
+      const clearHistoryButton = document.getElementById("clearHistoryButton");
+      const statusText = document.getElementById("statusText");
+      const activeSessionText = document.getElementById("activeSessionText");
+      const responseTimeText = document.getElementById("responseTimeText");
+      const flowText = document.getElementById("flowText");
+      const timelineCount = document.getElementById("timelineCount");
+      const timelineContainer = document.getElementById("timelineContainer");
+
+      const embeddingsCard = document.getElementById("embeddingsCard");
+      const embeddingsState = document.getElementById("embeddingsState");
+      const embeddingsDetail = document.getElementById("embeddingsDetail");
+      const semanticCard = document.getElementById("semanticCard");
+      const semanticState = document.getElementById("semanticState");
+      const semanticDetail = document.getElementById("semanticDetail");
+      const messageHistoryCard = document.getElementById("messageHistoryCard");
+      const messageHistoryState = document.getElementById("messageHistoryState");
+      const messageHistoryDetail = document.getElementById("messageHistoryDetail");
+      const routerCard = document.getElementById("routerCard");
+      const routerState = document.getElementById("routerState");
+      const routerDetail = document.getElementById("routerDetail");
+
+      function getSessionId() {
+        const sessionId = sessionInput.value.trim() || "default-session";
+        sessionInput.value = sessionId;
+        localStorage.setItem(SESSION_STORAGE_KEY, sessionId);
+        activeSessionText.textContent = sessionId;
+        return sessionId;
+      }
+
+      function formatPreview(values) {
+        if (!Array.isArray(values)) {
+          return "[]";
+        }
+        return `[${values.map((item) => Number(item).toFixed(4)).join(", ")}]`;
+      }
+
+      function truncateText(value, maxLength) {
+        if (!value) {
+          return "";
+        }
+        return value.length > maxLength ? `${value.slice(0, maxLength)}...` : value;
+      }
+
+      function formatTimestamp(value) {
+        const seconds = Number(value);
+        if (!Number.isFinite(seconds)) {
+          return String(value || "");
+        }
+        return new Date(seconds * 1000).toLocaleString("zh-CN");
+      }
+
+      function resetCardState(card, stateNode) {
+        card.classList.remove("hit", "miss", "semantic-miss", "error");
+        stateNode.classList.remove("hit", "miss", "warning", "error");
+      }
+
+      function setErrorState(message) {
+        statusText.textContent = `请求失败：${message}`;
+        [embeddingsCard, semanticCard, messageHistoryCard, routerCard].forEach((card) => {
+          card.classList.remove("hit", "miss", "semantic-miss");
+          card.classList.add("error");
+        });
+        [embeddingsState, semanticState, messageHistoryState, routerState].forEach((stateNode) => {
+          stateNode.classList.remove("hit", "miss", "warning");
+          stateNode.classList.add("error");
+          stateNode.textContent = "请求失败";
+        });
+      }
+
+      function renderEmbeddingsResult(result) {
+        const isHit = Boolean(result && result.hit);
+        resetCardState(embeddingsCard, embeddingsState);
+        embeddingsCard.classList.add(isHit ? "hit" : "miss");
+        embeddingsState.classList.add(isHit ? "hit" : "miss");
+        embeddingsState.textContent = isHit ? "命中" : "未命中";
+
+        const vectorDim = result && result.vector_dim ? result.vector_dim : 0;
+        const preview = result && result.vector_preview ? result.vector_preview : [];
+        embeddingsDetail.textContent = `向量维度: ${vectorDim}\n前 5 个值: ${formatPreview(preview)}`;
+      }
+
+      function renderSemanticResult(result) {
+        const isHit = Boolean(result && result.hit);
+        resetCardState(semanticCard, semanticState);
+
+        if (isHit) {
+          semanticCard.classList.add("hit");
+          semanticState.classList.add("hit");
+          semanticState.textContent = "命中";
+          semanticDetail.textContent = [
+            `距离: ${Number(result.distance || 0).toFixed(6)}`,
+            `缓存问题: ${result.cached_prompt || ""}`,
+            `缓存回复: ${result.response || ""}`,
+          ].join("\n");
+        } else {
+          semanticCard.classList.add("semantic-miss");
+          semanticState.classList.add("warning");
+          semanticState.textContent = "已写入新结果";
+          semanticDetail.textContent = `当前回复: ${(result && result.response) || ""}`;
+        }
+      }
+
+      function renderMessageHistory(result) {
+        const relevantMessages = Array.isArray(result && result.relevant_messages) ? result.relevant_messages : [];
+        const recentMessages = Array.isArray(result && result.recent_messages) ? result.recent_messages : [];
+        const stored = (result && result.stored) || {};
+
+        resetCardState(messageHistoryCard, messageHistoryState);
+        messageHistoryCard.classList.add("hit");
+        messageHistoryState.classList.add("hit");
+        messageHistoryState.textContent = "已存储";
+
+        const lines = [
+          `本轮问题: ${truncateText(stored.prompt || "", 34)}`,
+          `相关历史: ${relevantMessages.length} 条`,
+          `最近历史: ${recentMessages.length} 条`,
+        ];
+
+        if (relevantMessages.length > 0) {
+          lines.push("最近匹配:");
+          relevantMessages.slice(0, 2).forEach((item, index) => {
+            lines.push(
+              `${index + 1}. ${truncateText(item.prompt || "", 22)} | 距离 ${Number(item.distance || 0).toFixed(6)}`
+            );
+          });
+        } else {
+          lines.push("最近匹配: 当前没有相关语义历史");
+        }
+
+        messageHistoryDetail.textContent = lines.join("\n");
+        renderTimeline(recentMessages);
+      }
+
+      function renderRouterResult(result) {
+        const isMatched = Boolean(result && result.matched);
+        resetCardState(routerCard, routerState);
+
+        if (isMatched) {
+          routerCard.classList.add("hit");
+          routerState.classList.add("hit");
+          routerState.textContent = "已匹配";
+          routerDetail.textContent = [
+            `路由: ${result.route_name || ""}`,
+            `距离: ${Number(result.distance || 0).toFixed(6)}`,
+            `参考短语: ${result.matched_reference || ""}`,
+          ].join("\n");
+        } else {
+          routerCard.classList.add("miss");
+          routerState.classList.add("miss");
+          routerState.textContent = "未匹配";
+          routerDetail.textContent = (result && result.message) || "未匹配到任何路由。";
+        }
+      }
+
+      function renderTimeline(messages) {
+        const items = Array.isArray(messages) ? messages : [];
+        timelineCount.textContent = `${items.length} 条记录`;
+
+        if (items.length === 0) {
+          timelineContainer.className = "empty-state";
+          timelineContainer.textContent = "当前 Session 还没有历史对话。";
+          return;
+        }
+
+        const list = document.createElement("ol");
+        list.className = "timeline-list";
+
+        items.forEach((item) => {
+          const li = document.createElement("li");
+          li.className = "timeline-item";
+
+          const dot = document.createElement("div");
+          dot.className = "timeline-dot";
+
+          const body = document.createElement("div");
+          body.className = "timeline-body";
+
+          const timeNode = document.createElement("span");
+          timeNode.className = "timeline-time";
+          timeNode.textContent = formatTimestamp(item.created_at);
+
+          const questionNode = document.createElement("p");
+          questionNode.className = "timeline-question";
+          questionNode.textContent = `Q: ${item.prompt || ""}`;
+
+          const answerNode = document.createElement("p");
+          answerNode.className = "timeline-answer";
+          answerNode.textContent = `A: ${truncateText(item.response || "", 88)}`;
+
+          body.appendChild(timeNode);
+          body.appendChild(questionNode);
+          body.appendChild(answerNode);
+
+          li.appendChild(dot);
+          li.appendChild(body);
+          list.appendChild(li);
+        });
+
+        timelineContainer.className = "";
+        timelineContainer.textContent = "";
+        timelineContainer.appendChild(list);
+      }
+
+      function renderTiming(result) {
+        const timing = (result && result.timing) || {};
+        const responseTime = Number(timing.response_time_ms);
+        responseTimeText.textContent = Number.isFinite(responseTime) ? `${responseTime.toFixed(2)} ms` : "--";
+        flowText.textContent = Array.isArray(timing.flow) ? timing.flow.join(" -> ") : "等待请求";
+      }
+
+      async function refreshHistory() {
+        const sessionId = getSessionId();
+
+        try {
+          const response = await fetch(`/api/session/history?session_id=${encodeURIComponent(sessionId)}&top_k=5`);
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.detail || "读取历史失败。");
+          }
+
+          activeSessionText.textContent = data.normalized_session_id || sessionId;
+          renderTimeline(data.recent_messages || []);
+        } catch (error) {
+          statusText.textContent = `读取历史失败：${error.message}`;
+        }
+      }
+
+      async function submitQuestion() {
+        const question = questionInput.value.trim();
+        const sessionId = getSessionId();
+
+        if (!question) {
+          statusText.textContent = "请输入问题后再发送。";
+          return;
+        }
+
+        sendButton.disabled = true;
+        clearSemanticButton.disabled = true;
+        clearHistoryButton.disabled = true;
+        statusText.textContent = "请求中，请稍候";
+        statusText.classList.add("loading");
+
+        try {
+          const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              session_id: sessionId,
+              prompt: question,
+            }),
+          });
+
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.detail || "接口请求失败。");
+          }
+
+          activeSessionText.textContent = data.normalized_session_id || sessionId;
+          renderEmbeddingsResult(data.embeddings_cache || {});
+          renderSemanticResult(data.semantic_cache || {});
+          renderMessageHistory(data.message_history || {});
+          renderRouterResult(data.router || {});
+          renderTiming(data);
+          statusText.textContent = "请求完成。";
+        } catch (error) {
+          setErrorState(error.message);
+        } finally {
+          statusText.classList.remove("loading");
+          sendButton.disabled = false;
+          clearSemanticButton.disabled = false;
+          clearHistoryButton.disabled = false;
+        }
+      }
+
+      async function handleClearHistory() {
+        const sessionId = getSessionId();
+        clearHistoryButton.disabled = true;
+
+        try {
+          const response = await fetch(`/api/session/history?session_id=${encodeURIComponent(sessionId)}`, {
+            method: "DELETE",
+          });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.detail || "清除历史失败。");
+          }
+
+          renderTimeline([]);
+          messageHistoryDetail.textContent = "当前 Session 历史已清除。发送下一条消息后会重新开始积累。";
+          messageHistoryState.classList.remove("miss", "warning", "error");
+          messageHistoryState.classList.add("hit");
+          messageHistoryState.textContent = "已清除";
+          statusText.textContent = `当前 Session 已清除 ${data.cleared} 条历史。`;
+        } catch (error) {
+          statusText.textContent = `清除历史失败：${error.message}`;
+        } finally {
+          clearHistoryButton.disabled = false;
+        }
+      }
+
+      async function handleClearSemanticCache() {
+        clearSemanticButton.disabled = true;
+
+        try {
+          const response = await fetch("/api/cache/semantic", { method: "DELETE" });
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.detail || "清除语义缓存失败。");
+          }
+
+          resetCardState(semanticCard, semanticState);
+          semanticCard.classList.add("miss");
+          semanticState.classList.add("miss");
+          semanticState.textContent = "已清除";
+          semanticDetail.textContent = "语义缓存已清空。下一次提问将重新生成并写入回复。";
+          statusText.textContent = `语义缓存已清除 ${data.cleared} 条记录。`;
+        } catch (error) {
+          statusText.textContent = `清除语义缓存失败：${error.message}`;
+        } finally {
+          clearSemanticButton.disabled = false;
+        }
+      }
+
+      function initializePage() {
+        const storedSessionId = localStorage.getItem(SESSION_STORAGE_KEY) || "demo-session-a";
+        sessionInput.value = storedSessionId;
+        activeSessionText.textContent = storedSessionId;
+        refreshHistory();
+      }
+
+      sendButton.addEventListener("click", submitQuestion);
+      clearHistoryButton.addEventListener("click", handleClearHistory);
+      clearSemanticButton.addEventListener("click", handleClearSemanticCache);
+      sessionInput.addEventListener("change", refreshHistory);
+      sessionInput.addEventListener("blur", refreshHistory);
+      questionInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          submitQuestion();
+        }
+      });
+
+      initializePage();
+    </script>
+  </body>
+</html>
