@@ -1,0 +1,211 @@
+{
+  "game_id": "game_20260519_084345",
+  "start_time": "2026-05-19 08:43:45",
+  "end_time": "2026-05-19 08:44:13",
+  "config_name": "standard_6",
+  "role_assignment": {
+    "0": "seer",
+    "1": "villager",
+    "2": "hunter",
+    "3": "werewolf",
+    "4": "werewolf",
+    "5": "witch"
+  },
+  "player_styles": {
+    "0": "bold",
+    "1": "cautious",
+    "2": "balanced",
+    "3": "cautious",
+    "4": "bold",
+    "5": "random"
+  },
+  "dialogues": [
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "player_id": 3,
+      "player_name": "玩家4",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "night_kill",
+      "content": null,
+      "target": null,
+      "reasoning": "作为谨慎型狼人，我选择不轻易击杀目标。目前处于第一天夜晚，尚未掌握足够信息，为避免暴露或误杀关键好人，暂不行动。保持低调以观察局势发展。"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "night_kill",
+      "content": null,
+      "target": 0,
+      "reasoning": "作为大胆型狼人，我选择率先击杀玩家1（ID: 0），他是第一个发言的潜在威胁。通过快速清除关键角色，制造混乱并主导局势，符合我的激进风格。"
+    },
+    {
+      "day": 1,
+      "phase": "预言家查验",
+      "player_id": 0,
+      "player_name": "玩家1",
+      "role": "Seer",
+      "decision_style": null,
+      "action": "seer_check",
+      "content": null,
+      "target": 3,
+      "reasoning": "作为大胆型预言家，我选择冒险查验玩家4（ID: 3）。虽然没有明确线索，但我的直觉和激进风格驱使我快速锁定潜在威胁。若他为狼人，将直接暴露关键信息；若为好人，也能排除嫌疑，为白天发言奠定主动权。"
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 1,
+      "player_name": "玩家2",
+      "role": "Villager",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家好，我是玩家1。作为普通村民，我没有特殊能力，只能依靠逻辑和观察来判断。目前第一夜没有死亡记录，说明狼人可能还未行动，或者女巫使用了解药。我们需要谨慎对待每个人的表现。目前还没有任何明确的线索，所以我不会轻易指认任何人。我会重点关注发言中逻辑不一致或过于激进的玩家。希望大家理性讨论，避免情绪化投票。如果有人能提供有力证据，我会认真考虑。但现阶段，我选择保持中立，不率先提名任何玩家。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 2,
+      "player_name": "玩家3",
+      "role": "Hunter",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家好，我是玩家2，身份是猎人。首先，昨晚有一个人死亡，但目前没有公布具体信息，这让我怀疑是否有人在夜间被狼人击杀。作为猎人，我拥有在死亡时射击一名玩家的能力，因此我会谨慎使用这一技能，确保不误伤队友。\n\n从目前存活的玩家来看，玩家1已经出局，无法发言，而其他玩家中，我没有收到任何明确的查验信息。作为善良阵营的一员，我需要警惕那些可能伪装成平民或神职的狼人。例如，如果玩家3或玩家5在发言中表现出过度自信或试图主导讨论，需要特别留意，因为狼人常会通过制造混乱来混淆视听。\n\n目前我暂时没有确凿证据指向某位玩家，但我建议大家理性分析，不要轻信他人煽动性言论。如果有人提出自己是预言家或女巫，请提供具体查验结果或用药记录，否则请保持怀疑态度。\n\n最后，我希望所有善良玩家能团结一致，避免内斗。我的目标是找出并淘汰狼人，保护团队安全。请大家认真思考，合理发言。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 3,
+      "player_name": "玩家4",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家好，今天是第一天，信息比较少，我暂时不急于下结论。从目前的存活情况看，玩家1已经出局，但没有留下遗言，这让我们无法判断他是否是神职或狼人。我注意到玩家2和玩家3在发言中表现得较为积极，但我不确定他们的动机。玩家5和玩家6相对沉默，可能是在观察局势。作为狼人，我不会暴露自己，但我建议大家冷静分析，不要轻易怀疑他人。如果有人有明确证据指向某位玩家，可以提出，但目前我认为不宜过早站队。我们应以理性为主，避免误伤好人。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家注意了！第一夜已经死了一个人，死的是玩家1，而我们目前只有五个存活玩家：玩家2、玩家3、玩家4、玩家5、玩家6。我作为狼人，必须站出来引导局势。我怀疑玩家2和玩家6是狼人！为什么？因为玩家2在昨晚没有任何发言记录，但他是第一个被提及的玩家，非常可疑。而玩家6，他从头到尾表现得过于冷静，完全没有质疑别人，这种反常行为就是狼人的典型特征！我强烈建议今晚直接集火玩家2，如果他不是狼人，那说明我们内部有卧底，但如果是，我们就提前清除一个威胁！至于玩家3和玩家4，我暂时信任他们，但要严密观察。现在不是犹豫的时候，我们必须果断行动，否则善良阵营会慢慢蚕食我们！投票给我支持，一起把狼人揪出来！",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Witch",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家好，我是玩家6。今天第一晚，我感觉有点不安，但也没特别怀疑谁。反正我作为女巫，有解药和毒药，谁要是出事了，我可能还能救一救。不过……我觉得玩家2说话有点太急了，好像在抢风头，不太像好人。当然，也可能是我多想了。总之，大家冷静点，别乱投，等明天再看情况吧。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "投票",
+      "player_id": 2,
+      "player_name": "玩家3",
+      "role": "Hunter",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 4,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "投票",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 2,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "投票",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Witch",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 2,
+      "reasoning": null
+    },
+    {
+      "day": 2,
+      "phase": "狼人杀人",
+      "player_id": 3,
+      "player_name": "玩家4",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "night_kill",
+      "content": null,
+      "target": 5,
+      "reasoning": "根据谨慎型决策风格，我选择击杀玩家6（ID: 5）。他是目前唯一可能对狼人构成威胁的玩家，且在白天发言中表现较为活跃。为避免误杀，我选择一个相对可疑但不极端的选项，确保不轻易暴露身份或引发怀疑。"
+    },
+    {
+      "day": 2,
+      "phase": "狼人杀人",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "night_kill",
+      "content": null,
+      "target": 5,
+      "reasoning": "作为大胆型狼人，我选择直接击杀玩家6（ID: 5），因为他可能是威胁最大的潜在神职或村民。在第二夜，必须快速清除敌人以扩大优势，即使有误杀风险也值得冒险。"
+    }
+  ],
+  "winner": "evil",
+  "death_order": [
+    {
+      "player_id": 0,
+      "player_name": "玩家1",
+      "role": "Seer",
+      "cause": "night_kill",
+      "day": 1
+    },
+    {
+      "player_id": 2,
+      "player_name": "玩家3",
+      "role": "Hunter",
+      "cause": "vote",
+      "day": 1
+    },
+    {
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Witch",
+      "cause": "night_kill",
+      "day": 2
+    },
+    {
+      "player_id": 1,
+      "player_name": "玩家2",
+      "role": "Villager",
+      "cause": "night_kill",
+      "day": 2
+    }
+  ]
+}

@@ -1,0 +1,259 @@
+{
+  "game_id": "game_20260519_085434",
+  "start_time": "2026-05-19 08:54:34",
+  "end_time": "2026-05-19 08:55:31",
+  "config_name": "standard_6",
+  "role_assignment": {
+    "0": "hunter",
+    "1": "werewolf",
+    "2": "villager",
+    "3": "seer",
+    "4": "witch",
+    "5": "werewolf"
+  },
+  "player_styles": {
+    "0": "bold",
+    "1": "cautious",
+    "2": "balanced",
+    "3": "cautious",
+    "4": "bold",
+    "5": "random"
+  },
+  "dialogues": [
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "player_id": 1,
+      "player_name": "玩家2",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "night_kill",
+      "content": null,
+      "target": 2,
+      "reasoning": "作为谨慎型狼人，我选择击杀玩家3（ID: 2）。该玩家在发言中未表现出明显倾向，但考虑到游戏初期信息有限，我倾向于选择一个相对中立且不具威胁的玩家作为首夜目标。此决定避免过早暴露身份，同时确保行动保守稳妥。"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "night_kill",
+      "content": null,
+      "target": 3,
+      "reasoning": "随机选择玩家4（ID: 3）作为目标，感觉他看起来比较安静，不怎么发言，适合首夜清除。直觉告诉我他可能是个威胁，所以干脆就选他了。"
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 0,
+      "player_name": "玩家1",
+      "role": "Hunter",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家注意，昨晚我被狼人盯上了，但幸运的是我活了下来。然而，玩家3（玩家2）在第一夜就被击杀，这非常可疑！一个普通村民怎么可能成为狼人的目标？除非他有特殊身份——比如预言家或女巫。但更有可能的是，他是被狼人故意排除的，以扰乱我们的判断。现在，我怀疑玩家2（玩家1）和玩家4（玩家3）之间存在默契。他们两个都在第一天就保持沉默，没有发言，也没有主动站出来质疑谁。而我作为猎人，拥有强大的自保能力，如果我是狼人，我绝不会轻易暴露自己。所以我大胆推断：玩家2（玩家1）是狼人！他必须立刻被投票出局！否则我们所有人都会陷入危险。我不怕误杀，因为我的生命就是赌注！现在，我要带队追查真相，所有人给我盯紧玩家2！",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 1,
+      "player_name": "玩家2",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家好，我是玩家2（ID:1）。昨晚我作为普通村民，没有受到任何攻击，所以我认为自己是安全的。目前唯一被击杀的是玩家3（ID:2），而玩家1（ID:0）声称自己被盯上但活了下来，这让我有些怀疑——如果他真的是猎人，为什么没在第一夜被杀？反而在第二天就站出来指控他人？这种过于主动的发言方式，反而让我觉得可疑。另外，玩家4（ID:3）和玩家6（ID:5）都没有发言，但他们之间似乎有默契，尤其是玩家6在夜晚行动后立刻沉默，这一点值得警惕。不过，由于信息有限，我不会轻易下结论。我的原则是：宁可放过可疑者，也不误杀无辜。所以我不提名任何人，但我建议大家冷静分析，不要被情绪带偏。尤其要注意那些急于推锅、制造对立的人。保持理性，才是活下去的关键。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 3,
+      "player_name": "玩家4",
+      "role": "Seer",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家好，我是玩家4（ID:3）。昨晚我作为预言家，没有受到攻击，因此我认为自己是安全的。目前唯一被击杀的是玩家3（ID:2），而玩家1（ID:0）声称自己被狼人盯上但活了下来——这确实值得怀疑，因为如果他是猎人，按理说应该在第一夜就被击杀，但他却能站出来指控他人，这种反常行为需要警惕。同时，玩家2（ID:1）虽然自称普通村民，但他的发言逻辑清晰，态度冷静，反而显得过于理性，让人难以判断其真实意图。另外，玩家6（ID:5）全程未发言，也存在沉默嫌疑。不过，作为预言家，我不会轻易下结论。我的原则是：宁可放过可疑者，也不误杀无辜。因此，我不提名任何人。但我建议大家保持冷静，不要被情绪带偏。尤其要警惕那些急于制造对立、推动投票的人。真相需要时间验证，我们应以事实为依据，而非猜测。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Witch",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家听好了！昨晚玩家3（ID:2）被击杀，而我作为女巫，必须立刻做出判断——这根本不是普通村民的死法！一个狼人怎么可能在第一夜就精准地排除掉一个毫无威胁的普通村民？这背后一定有阴谋！我怀疑玩家1（ID:0）和玩家2（ID:1）之间存在狼人联动。玩家1自称被盯上却活了下来，这太可疑了——如果他是猎人，按理说应该在第一夜就被杀，但他却能站出来指控他人，这种反常行为极可能是伪装！而玩家2（ID:1）虽然装得冷静，但他的发言逻辑太完美，像在引导舆论，刻意制造对立，目的就是让我们误判！更让我警惕的是，玩家4（ID:3）作为预言家，居然没有查验任何人，也没有提供任何信息，反而说‘不提名’，这根本不符合神职应有的担当！我大胆推断：玩家2（ID:1）是狼人，他必须立刻出局！我不怕误杀，因为我有药！如果今天不果断出手，明天我们就会全军覆没！现在，我带队投票，所有人跟我一起投玩家2！",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "speech",
+      "content": "我感觉今天这局挺玄乎的，大家说得都挺有道理，但我心里总觉得有点乱。玩家1说他被盯上了，可为什么没死？玩家2装得特别冷静，好像在演戏。玩家4和玩家5都不说话，一个说自己是预言家，一个说是女巫，但都没拿出证据来。我反正觉得最可疑的是玩家2，他一直在那边挑拨离间，说什么‘不要情绪化’，可他自己不也一直在推人吗？我觉得他就是想把锅甩给别人。不过嘛……我也可能想多了，毕竟我也是随机发言，看心情而已。反正我觉得今晚别太激动，先看看谁还敢跳出来站队。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "投票",
+      "player_id": 0,
+      "player_name": "玩家1",
+      "role": "Hunter",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 1,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "投票",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Witch",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 1,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "投票",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 3,
+      "reasoning": null
+    },
+    {
+      "day": 2,
+      "phase": "狼人杀人",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "night_kill",
+      "content": null,
+      "target": 3,
+      "reasoning": "随机选择玩家4（ID:3）作为目标，感觉他看起来有点装模作样，不怎么说话，但又在发言中表现得特别理性。直觉告诉我他可能是个威胁，所以干脆就选他了。反正也是随机决定，就这样吧。"
+    },
+    {
+      "day": 2,
+      "phase": "公开演讲",
+      "player_id": 0,
+      "player_name": "玩家1",
+      "role": "Hunter",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家听好了！昨晚玩家3（玩家2）被击杀，而我作为猎人，活了下来——这说明狼人盯上了我，但没成功！现在，我们只剩下三个人：玩家4（玩家5）、玩家5（玩家6）和我。但你们有没有发现一个致命的漏洞？玩家2（玩家1）在第一夜就站出来指控我，说我是伪装的猎人，可他怎么知道我是猎人？除非……他是狼人，故意制造混乱来掩护自己！更离谱的是，玩家5（玩家6）居然投了玩家4（玩家3），而玩家4（玩家3）是预言家，根本没动过！这明显是狼人之间的默契——他们互相包庇，用假投票扰乱我们的判断！现在，我再次强调：玩家2（玩家1）是狼人！他从第一天就开始挑拨离间，引导舆论，目的就是让我们误杀神职或好人！我不怕误杀，因为我有枪！如果我今晚死，我会带走一个！所以，所有人跟我一起投玩家2！今天必须灭掉狼人，否则明天我们就全军覆没！猎人不退，谁敢退？",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 2,
+      "phase": "公开演讲",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Witch",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家听好了！昨晚玩家3（玩家2）被击杀，而我作为女巫，必须立刻做出判断——这根本不是普通村民的死法！一个狼人怎么可能在第一夜就精准地排除掉一个毫无威胁的普通村民？这背后一定有阴谋！我怀疑玩家1（玩家0）和玩家2（玩家1）之间存在狼人联动。玩家1自称被盯上却活了下来，这太可疑了——如果他是猎人，按理说应该在第一夜就被杀，但他却能站出来指控他人，这种反常行为极可能是伪装！而玩家2（玩家1）虽然装得冷静，但他的发言逻辑太完美，像在引导舆论，刻意制造对立，目的就是让我们误判！更让我警惕的是，玩家4（玩家3）作为预言家，居然没有查验任何人，也没有提供任何信息，反而说‘不提名’，这根本不符合神职应有的担当！我大胆推断：玩家2（玩家1）是狼人，他必须立刻出局！我不怕误杀，因为我有药！如果今天不果断出手，明天我们就会全军覆没！现在，我带队投票，所有人跟我一起投玩家2！",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 2,
+      "phase": "公开演讲",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "speech",
+      "content": "我感觉今天这局真是玄乎得不行，大家说得都挺有道理，但我心里就是觉得不对劲。玩家1（玩家0）和玩家5（玩家6）一个说要投玩家2，一个说要投玩家2，可他们俩之前根本没对上话，怎么就突然一致了？这太巧了，像在演戏。再说了，玩家4（玩家3）明明是预言家，为什么第一夜不查人，反而装得特别冷静？他要是真神职，怎么会不站出来？我觉得最可疑的是玩家5（玩家6），他昨天投了玩家4，可玩家4是预言家啊，这明显是在帮狼人排除神职！我反正觉得玩家5才是真正的狼人，他一直在假装理性，其实心机深得很。不过嘛……我也可能想多了，毕竟我也是随机发言，看心情而已。总之，别被表面的逻辑骗了，谁说得越狠，越可能是狼人！",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 2,
+      "phase": "投票",
+      "player_id": 0,
+      "player_name": "玩家1",
+      "role": "Hunter",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 5,
+      "reasoning": null
+    },
+    {
+      "day": 2,
+      "phase": "投票",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Witch",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 5,
+      "reasoning": null
+    },
+    {
+      "day": 2,
+      "phase": "投票",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 0,
+      "reasoning": null
+    }
+  ],
+  "winner": "good",
+  "death_order": [
+    {
+      "player_id": 2,
+      "player_name": "玩家3",
+      "role": "Villager",
+      "cause": "night_kill",
+      "day": 1
+    },
+    {
+      "player_id": 1,
+      "player_name": "玩家2",
+      "role": "Werewolf",
+      "cause": "vote",
+      "day": 1
+    },
+    {
+      "player_id": 3,
+      "player_name": "玩家4",
+      "role": "Seer",
+      "cause": "night_kill",
+      "day": 2
+    },
+    {
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Werewolf",
+      "cause": "vote",
+      "day": 2
+    }
+  ]
+}
