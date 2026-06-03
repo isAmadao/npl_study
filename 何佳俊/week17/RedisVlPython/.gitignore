@@ -1,0 +1,32 @@
+# === Python ===
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+
+# === Environment ===
+.env
+.env.local
+*.env
+
+# === IDE ===
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# === Milvus Lite (auto-generated databases) ===
+*.db/
+*.db
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Project-specific ===
+# Claude Code personal memory (not project files)
+.claude/memory/
+.claude/worktrees/
+.claude/scheduled_tasks.json

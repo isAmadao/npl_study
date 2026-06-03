@@ -1,0 +1,95 @@
+# ============================================================
+# RedisVL Agent Cache — 生产部署 Docker Compose 配置
+# ============================================================
+# 启动所有服务:
+#   docker compose up -d
+#
+# 查看日志:
+#   docker compose logs -f
+#
+# 停止所有服务:
+#   docker compose down
+#
+# 停止并清理数据:
+#   docker compose down -v
+# ============================================================
+
+version: "3.8"
+
+services:
+  # ==================== Redis（数据缓存）====================
+  # 兼容 Redis 6.x / 7.x，无需 Redis Stack 模块
+  redis:
+    image: redis:7-alpine
+    container_name: redisvl-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+    networks:
+      - redisvl-network
+
+  # ==================== Milvus（向量数据库）====================
+  milvus:
+    image: milvusdb/milvus:v2.4.1
+    container_name: redisvl-milvus
+    restart: unless-stopped
+    ports:
+      - "19530:19530"   # gRPC
+      - "9091:9091"     # HTTP (健康检查/监控)
+    volumes:
+      - milvus-data:/var/lib/milvus
+    environment:
+      ETCD_USE_EMBED: "true"
+      ETCD_DATA_DIR: "/var/lib/milvus/etcd"
+      MINIO_USE_EMBED: "true"
+      MINIO_DATA_DIR: "/var/lib/milvus/minio"
+      COMMON_STORAGETYPE: "local"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9091/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    networks:
+      - redisvl-network
+
+  # ====================（可选）监控 ====================
+  # 使用 RedisInsight 可视化 Redis 数据
+  redis-insight:
+    image: redis/redisinsight:latest
+    container_name: redisvl-redis-insight
+    restart: unless-stopped
+    ports:
+      - "5540:5540"
+    volumes:
+      - redis-insight-data:/data
+    depends_on:
+      - redis
+    profiles:
+      - monitoring  # 仅显式启用时启动: docker compose --profile monitoring up -d
+    networks:
+      - redisvl-network
+
+# ==================== 持久化卷 ====================
+volumes:
+  redis-data:
+    driver: local
+  milvus-data:
+    driver: local
+  redis-insight-data:
+    driver: local
+
+# ==================== 网络 ====================
+networks:
+  redisvl-network:
+    driver: bridge

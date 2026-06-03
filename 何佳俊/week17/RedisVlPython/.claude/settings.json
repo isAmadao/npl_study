@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash: pip install*",
+      "Bash: python *",
+      "Bash: pytest *",
+      "Bash: mkdir*",
+      "Bash: cp*",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep"
+    ]
+  }
+}

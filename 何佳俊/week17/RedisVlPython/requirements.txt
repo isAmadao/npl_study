@@ -1,0 +1,34 @@
+# === 核心依赖 ===
+redis>=4.5.0,<6.0.0          # Redis 客户端（兼容低版本 Redis 6.x/7.x）
+pymilvus>=2.3.0,<3.0.0      # Milvus 向量数据库 Python SDK
+numpy>=1.21.0                # 向量数值计算
+
+# === Embedding 模型 ===
+openai>=1.0.0                # OpenAI Embedding / Qwen 兼容接口（可选）
+dashscope>=1.0.0             # Qwen DashScope SDK（可选，推荐）
+sentence-transformers>=2.2.0 # 本地 Embedding 模型（可选）
+
+# === 可选 ===
+# milvus-lite                 # 嵌入式 Milvus（开发用，无需 Docker）
+# pymilvus[milvus-lite]       # 或通过此方式一并安装 Milvus Lite
+
+# === 工具 ===
+python-dotenv>=1.0.0         # 环境变量管理
+pydantic>=2.0.0              # 数据模型与校验
+
+# === 可选 ===
+# scikit-learn>=1.0.0        # 备选相似度计算
+# loguru>=0.7.0              # 结构化日志（可选替代 logging）
+
+# === Web 监控面板（可选）===
+# fastapi>=0.104.0            # REST API 框架
+# uvicorn>=0.24.0             # ASGI 服务器
+
+# === 开发依赖 ===
+pytest>=7.0.0                # 测试框架
+pytest-cov>=4.0.0            # 测试覆盖率
+pytest-mock>=3.10.0          # Mock 支持
+fakeredis>=2.10.0            # Redis Mock（单元测试用）
+mypy>=1.0.0                  # 类型检查
+black>=23.0.0                # 代码格式化
+isort>=5.12.0                # 导入排序
