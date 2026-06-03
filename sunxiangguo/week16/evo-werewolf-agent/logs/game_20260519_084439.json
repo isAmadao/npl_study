@@ -1,0 +1,278 @@
+{
+  "game_id": "game_20260519_084439",
+  "start_time": "2026-05-19 08:44:39",
+  "end_time": "2026-05-19 08:45:14",
+  "config_name": "standard_6",
+  "role_assignment": {
+    "0": "villager",
+    "1": "werewolf",
+    "2": "werewolf",
+    "3": "hunter",
+    "4": "seer",
+    "5": "witch"
+  },
+  "player_styles": {
+    "0": "bold",
+    "1": "cautious",
+    "2": "balanced",
+    "3": "cautious",
+    "4": "bold",
+    "5": "random"
+  },
+  "dialogues": [
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "player_id": 1,
+      "player_name": "玩家2",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "night_kill",
+      "content": null,
+      "target": 3,
+      "reasoning": "作为谨慎型狼人，我选择击杀玩家3（玩家4）。该目标在白天未表现出明显异常，但考虑到首夜需稳妥推进，选择一个相对边缘的玩家以降低被怀疑风险。不轻易用药或查验，保持低调。"
+    },
+    {
+      "day": 1,
+      "phase": "狼人杀人",
+      "player_id": 2,
+      "player_name": "玩家3",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "night_kill",
+      "content": null,
+      "target": 3,
+      "reasoning": "作为狼人，我需要在第一天合理选择一个目标进行击杀。玩家4（ID: 3）是潜在的威胁，因为其名字和身份未被揭示，且在没有明确信息的情况下，选择一个中立或可能被怀疑的角色可以制造混乱。同时，避免过早暴露自己与狼队的联系，因此选择非核心角色作为首夜目标，以保持隐蔽性。"
+    },
+    {
+      "day": 1,
+      "phase": "预言家查验",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Seer",
+      "decision_style": null,
+      "action": "seer_check",
+      "content": null,
+      "target": 1,
+      "reasoning": "作为大胆型预言家，我选择查验玩家2（ID: 1）。他发言风格模糊且在第一天就表现出异常的冷静，极有可能是狼人伪装。我愿意冒险查验他，以快速锁定潜在威胁，为白天的激进带队提供依据。"
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 0,
+      "player_name": "玩家1",
+      "role": "Villager",
+      "decision_style": null,
+      "action": "speech",
+      "content": "各位玩家，昨晚我方有一名玩家被击杀，目标是玩家4（玩家3），这说明狼人已经开始了行动！现在场上还剩五人：玩家1、玩家2、玩家3、玩家5、玩家6。我作为村民，必须立刻采取行动！\n\n首先，我注意到玩家2和玩家5的发言非常冷静，但没有任何有效信息支持他们的立场。尤其是玩家2，他全程沉默，毫无互动，这种行为极其可疑！而玩家6，虽然说话了，但内容空洞，完全没有逻辑支撑。这两人极有可能是狼人伪装成好人。\n\n再看玩家3，他是唯一一个在夜晚被击杀的人，这说明他可能不是狼人——因为狼人不会自爆。所以，玩家3的死亡是狼人清除威胁的结果，反而是我们判断狼人的关键线索！\n\n综上所述，我认为玩家2和玩家6是最大嫌疑！他们不发声、不配合，甚至可能在暗中串通。我不怕误杀，但我必须带头冲锋！如果你们不跟我一起怀疑他们，那今晚我们所有人都会死！\n\n我建议：从今天开始，我们必须盯死玩家2和玩家6！谁敢包庇他们，就是下一个牺牲品！现在，我要投玩家2！大家跟我一起，把狼人揪出来！",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 1,
+      "player_name": "玩家2",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家好，我是玩家2。昨晚我看到玩家4被击杀，目前场上还剩五人，其中玩家1、玩家3、玩家5、玩家6都还活着。从信息来看，昨晚的死亡是狼人行动的结果，而我们作为村民，必须谨慎分析。目前没有明确的神职身份暴露，因此需要保持警惕。我注意到玩家1在发言中表现得较为冷静，但缺乏关键信息支持；玩家3和玩家5则相对沉默，可能在隐藏自己。由于我没有掌握确切的查验信息，也不确定谁是预言家或女巫，所以我不会轻易站队或指责某人。我的建议是：保持冷静，不要急于下结论，观察后续发言中的逻辑漏洞。如果有人突然跳出来指认别人，要特别注意是否在转移注意力。总之，我会以保守态度对待每个人，不轻信，不乱投，确保不误杀好人。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 2,
+      "player_name": "玩家3",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家好，我是玩家3。首先，昨晚有玩家4被击杀，这是一个关键信息。从死亡情况看，狼人选择的目标是玩家4，说明他们可能在清除一个对他们构成威胁的角色。目前存活的玩家包括玩家1、玩家2、玩家5和玩家6。我们需要冷静分析：如果我是预言家，我会怀疑谁？首先，玩家1在第一轮发言中表现得过于急切，试图引导投票，这让我感到可疑。其次，玩家2虽然发言较稳，但没有提供任何具体信息，显得过于保守。玩家5和玩家6则相对沉默，缺乏发言力度。然而，作为狼人，我必须强调：不能仅凭直觉下结论。建议大家理性讨论，尤其是关注是否有角色在刻意隐藏身份或误导舆论。同时，我提醒所有人，警惕那些试图制造对立的人，因为这往往是狼人的策略。最后，我希望所有善良玩家能团结一致，共同找出真正的狼人。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Seer",
+      "decision_style": null,
+      "action": "speech",
+      "content": "各位玩家，我是预言家，昨晚我查验了玩家3（玩家4），结果是狼人！虽然他已经被处决了，但我要强调的是，这个信息非常关键。现在场上还剩下五个人：玩家1、玩家2、玩家3（已死）、玩家5、玩家6。根据死亡记录，昨晚的死者是玩家3，而我作为预言家，已经确认他就是狼人。这意味着，目前场上还有至少一个狼人未被发现。我怀疑玩家1和玩家6有可疑行为，尤其是玩家1，他在发言中试图转移焦点，明显在包庇他人。玩家6则全程沉默，毫无逻辑可言。我要求大家立刻投票处决玩家1或玩家6中的一个，必须果断行动！不要犹豫，否则我们会被狼人逐个击破。我是善良阵营的守护者，我不会退缩，谁要是怀疑我，就请用行动证明自己！",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "公开演讲",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Witch",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家好，我是玩家6，今晚我看到玩家4被杀，但我不确定是谁干的。我觉得玩家1和玩家3有点奇怪，说话总是绕来绕去，没个重点。不过我也可能想多了，毕竟狼人也可能会装无辜。反正我作为女巫，有救人的能力，我会看情况用。现在先听听大家怎么说，别急着投，冷静点。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "投票",
+      "player_id": 0,
+      "player_name": "玩家1",
+      "role": "Villager",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 2,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "投票",
+      "player_id": 1,
+      "player_name": "玩家2",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 2,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "投票",
+      "player_id": 2,
+      "player_name": "玩家3",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 4,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "投票",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Seer",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 2,
+      "reasoning": null
+    },
+    {
+      "day": 1,
+      "phase": "投票",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Witch",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 1,
+      "reasoning": null
+    },
+    {
+      "day": 2,
+      "phase": "狼人杀人",
+      "player_id": 1,
+      "player_name": "玩家2",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "night_kill",
+      "content": null,
+      "target": 4,
+      "reasoning": "当前存活玩家中，玩家5（ID:4）在白天发言中表现较为激进，且未提供有效信息，存在可疑迹象。作为谨慎型狼人，我选择击杀此目标以减少威胁，同时避免误杀潜在好人。"
+    },
+    {
+      "day": 2,
+      "phase": "预言家查验",
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Seer",
+      "decision_style": null,
+      "action": "seer_check",
+      "content": null,
+      "target": 5,
+      "reasoning": "根据昨晚的死亡情况，玩家4（我）和玩家0被击杀，说明狼人已行动。目前存活玩家中，玩家5（玩家6）是唯一未被提及且可能隐藏身份的候选人。作为大胆型预言家，我选择冒险查验玩家5，以迅速锁定狼人或获得关键信息，推动局势发展。"
+    },
+    {
+      "day": 2,
+      "phase": "公开演讲",
+      "player_id": 1,
+      "player_name": "玩家2",
+      "role": "Werewolf",
+      "decision_style": null,
+      "action": "speech",
+      "content": "大家好，目前场上还剩我和玩家6。昨晚有两人死亡，分别是玩家1和玩家5，但具体是谁被击杀还不清楚。作为狼人，我不会主动暴露自己，但我注意到，玩家6在发言中表现得非常冷静，没有太多情绪波动，这让我有些怀疑。不过，我也知道不能轻易下结论，毕竟每个人都有可能被误导。目前信息有限，我不确定谁是狼人，但我觉得我们应该谨慎对待每一个发言，不要轻信。如果有人能提供更有力的证据，我们可以一起讨论。现在最重要的是避免误伤好人，保持冷静，理性分析。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 2,
+      "phase": "公开演讲",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Witch",
+      "decision_style": null,
+      "action": "speech",
+      "content": "我感觉今晚死的人有点奇怪，玩家1和玩家5都倒了，但我觉得玩家2可能是狼人，因为他一直没说话，太安静了。我虽然不知道真相，但直觉告诉我不能相信所有人。大家要小心点，别被迷惑了。",
+      "target": null,
+      "reasoning": null
+    },
+    {
+      "day": 2,
+      "phase": "投票",
+      "player_id": 5,
+      "player_name": "玩家6",
+      "role": "Witch",
+      "decision_style": null,
+      "action": "vote",
+      "content": null,
+      "target": 1,
+      "reasoning": null
+    }
+  ],
+  "winner": "good",
+  "death_order": [
+    {
+      "player_id": 3,
+      "player_name": "玩家4",
+      "role": "Hunter",
+      "cause": "night_kill",
+      "day": 1
+    },
+    {
+      "player_id": 2,
+      "player_name": "玩家3",
+      "role": "Werewolf",
+      "cause": "vote",
+      "day": 1
+    },
+    {
+      "player_id": 4,
+      "player_name": "玩家5",
+      "role": "Seer",
+      "cause": "night_kill",
+      "day": 2
+    },
+    {
+      "player_id": 0,
+      "player_name": "玩家1",
+      "role": "Villager",
+      "cause": "night_kill",
+      "day": 2
+    },
+    {
+      "player_id": 1,
+      "player_name": "玩家2",
+      "role": "Werewolf",
+      "cause": "vote",
+      "day": 2
+    }
+  ]
+}
